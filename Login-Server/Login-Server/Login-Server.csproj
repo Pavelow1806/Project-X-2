@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ByteBuffer">
+      <HintPath>..\..\ByteBuffer\bin\Debug\ByteBuffer.dll</HintPath>
+    </Reference>
     <Reference Include="Core">
       <HintPath>..\..\Core\Core\bin\Debug\Core.dll</HintPath>
     </Reference>
@@ -56,6 +59,7 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Send.cs" />
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
     </Compile>
