@@ -1,0 +1,9 @@
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\bin\Debug\Test Environment.exe.config
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\bin\Debug\Test Environment.exe
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\bin\Debug\Test Environment.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\bin\Debug\Core.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\bin\Debug\Core.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\obj\Debug\Test Environment.csprojAssemblyReference.cache
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\obj\Debug\Test Environment.csproj.CopyComplete
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\obj\Debug\Test Environment.exe
+C:\Users\james\Documents\GitHub\Project-X-2\Test Environment\Test Environment\obj\Debug\Test Environment.pdb

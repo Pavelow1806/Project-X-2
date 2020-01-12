@@ -1,0 +1,106 @@
+﻿Installing assembly 'C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+No public installers with the RunInstallerAttribute.Yes attribute could be found in the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly.
+Committing assembly 'C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+No public installers with the RunInstallerAttribute.Yes attribute could be found in the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly.
+Remove InstallState file because there are no installers.
+Installing assembly 'C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+No public installers with the RunInstallerAttribute.Yes attribute could be found in the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly.
+Committing assembly 'C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+No public installers with the RunInstallerAttribute.Yes attribute could be found in the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly.
+Remove InstallState file because there are no installers.
+Installing assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Rolling back assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Rolling back assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing service Project-X-2 Login Server...
+Service Project-X-2 Login Server has been successfully installed.
+Creating EventLog source Project-X-2 Login Server in log Application...
+Committing assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Uninstalling assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Removing EventLog source Project-X-2 Login Server.
+Service Project-X-2 Login Server is being removed from the system...
+Service Project-X-2 Login Server was successfully removed from the system.
+Installing assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing service Project-X-2 Login Server...
+Creating EventLog source Project-X-2 Login Server in log Application...
+Rolling back assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Restoring event log to previous state for source Project-X-2 Login Server.
+Installing assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing service Project-X-2 Login Server...
+Creating EventLog source Project-X-2 Login Server in log Application...
+Rolling back assembly 'c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Restoring event log to previous state for source Project-X-2 Login Server.
+Installing assembly 'C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing service Project-X-2 Login Server...
+Service Project-X-2 Login Server has been successfully installed.
+Creating EventLog source Project-X-2 Login Server in log Application...
+Committing assembly 'C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
+   assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe

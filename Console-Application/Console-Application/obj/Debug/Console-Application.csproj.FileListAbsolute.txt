@@ -1,0 +1,17 @@
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\Console-Application.exe.config
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\Console-Application.exe
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\Console-Application.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\Core.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\Core.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\MainWindow.g.cs
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\App.g.cs
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application_MarkupCompile.cache
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application_MarkupCompile.lref
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\MainWindow.baml
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.g.resources
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console_Application.Properties.Resources.resources
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.csproj.GenerateResource.cache
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.csproj.CopyComplete
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.exe
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.csprojAssemblyReference.cache

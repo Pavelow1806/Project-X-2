@@ -1,0 +1,11 @@
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\Core.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe.config
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\Core.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login_Server.ProjectInstaller.resources
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csproj.GenerateResource.cache
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csproj.CopyComplete
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.exe
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csprojAssemblyReference.cache

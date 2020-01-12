@@ -1,0 +1,132 @@
+﻿
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+An exception occurred during the Install phase.
+System.ArgumentOutOfRangeException: Index and length must refer to a location within the string.
+Parameter name: length
+
+The Rollback phase of the installation is beginning.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Rollback phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+An exception occurred during the Install phase.
+System.InvalidOperationException: User has canceled installation of services in executable c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe.
+
+The Rollback phase of the installation is beginning.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Rollback phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
+
+
+The uninstall is beginning.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The uninstall has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+An exception occurred during the Install phase.
+System.ComponentModel.Win32Exception: The specified service has been marked for deletion
+
+The Rollback phase of the installation is beginning.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Rollback phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+An exception occurred during the Install phase.
+System.ComponentModel.Win32Exception: The specified service has been marked for deletion
+
+The Rollback phase of the installation is beginning.
+See the contents of the log file for the c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at c:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Rollback phase completed successfully.
+
+The transacted install has completed.
+
+Running a transacted installation.
+
+Beginning the Install phase of the installation.
+See the contents of the log file for the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Install phase completed successfully, and the Commit phase is beginning.
+See the contents of the log file for the C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe assembly's progress.
+The file is located at C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog.
+
+The Commit phase completed successfully.
+
+The transacted install has completed.
