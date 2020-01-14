@@ -35,13 +35,9 @@ namespace Core
 
         public static bool Running = false;
 
-
         #region Connections
         public string AuthenticationCode = "";
-        private int ServerNumber = 10;
         public Client[] Clients = new Client[Constants.MaxConnections];
-        public Dictionary<string, Client> ClientsByIP = new Dictionary<string, Client>();
-        public Dictionary<string, Client> ClientsByUsername = new Dictionary<string, Client>();
 
         public List<Server> ServerQueue = new List<Server>();
         public Dictionary<ConnectionType, Server> Servers = new Dictionary<ConnectionType, Server>();
@@ -81,18 +77,8 @@ namespace Core
                 return false;
             }
             Running = true;
+            Log.Write(LogType.Information, "Server started");
             return true;
-        }
-        public int GetClient(string ip)
-        {
-            for (int i = 0; i < Clients.Length; i++)
-            {
-                if (Clients[i].Connected && Clients[i].IP.Length > 1 && Clients[i].IP.Substring(0, Clients[i].IP.IndexOf(':')) == ip)
-                {
-                    return i;
-                }
-            }
-            return -1;
         }
 
         #region Events
