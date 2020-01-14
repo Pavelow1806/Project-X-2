@@ -8,13 +8,6 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public enum ConnectionType
-    {
-        GAMESERVER,
-        CLIENT,
-        LOGINSERVER,
-        SYNCSERVER
-    }
     class Connection
     {
         public ConnectionType Type;
@@ -31,7 +24,7 @@ namespace Core
         public string Username = "";
         public string SessionID = "";
         public bool Connected = false;
-        public DateTime ConnectedTime = default(DateTime);
+        public DateTime ConnectedTime = default;
         #endregion
 
         #region Network
@@ -63,7 +56,7 @@ namespace Core
                     IP = "";
                     Username = "";
                     SessionID = "";
-                    ConnectedTime = default(DateTime);
+                    ConnectedTime = default;
 
                     // Network
                     ReadBuff = null;
@@ -77,8 +70,8 @@ namespace Core
                         Socket.Close();
                         Socket = null;
                     }
-                    // Rejoin main thread
 
+                    // Rejoin main thread
                     ConnectionThread.Join();
                 }
             }
@@ -86,8 +79,8 @@ namespace Core
 
         public void BeginThread()
         {
-            Socket.SendBufferSize = Network.BufferSize;
-            Socket.ReceiveBufferSize = Network.BufferSize;
+            Socket.SendBufferSize = Constants.BufferSize;
+            Socket.ReceiveBufferSize = Constants.BufferSize;
             Stream = Socket.GetStream();
             Array.Resize(ref ReadBuff, Socket.ReceiveBufferSize);
             StartAccept();
@@ -105,9 +98,9 @@ namespace Core
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.log("An error occurred when beginning the streams read. > " + e.Message, Log.LogType.ERROR);
+                Log.Write($"An error occurred when beginning {nameof(Stream).ToString()}'s BeginRead function", ex);
             }
         }
         private void HandleAsyncConnection(IAsyncResult result)
@@ -144,14 +137,13 @@ namespace Core
                 catch (Exception ex)
                 {
                     // Output error message
-                    Log.Write(ex)
-                    //Log.log("An error occured while receiving data. Closing connection to " + Type.ToString() + ((Type == ConnectionType.CLIENT) ? " Index " + Index.ToString() : "."), Log.LogType.ERROR);
+                    Log.Write("An error occurred when receiving data", ex);
                 }
                 finally
                 {
+                    Log.Write(LogType.Information, $"Connection closed with IP {IP}, Index {Index.ToString()}, Username {Username}, Connected for {(DateTime.Now - ConnectedTime).ToString()}\nSession ID: {SessionID}");
                     // Close the connection
                     Close();
-                    return;
                 }
             }
         }

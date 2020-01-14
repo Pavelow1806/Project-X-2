@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ByteBuffer;
@@ -32,7 +33,7 @@ namespace Core
                             {
                                 return;
                             }
-                            Log.log("Packet Received [#" + PacketNumber.ToString("000") + " " + ((GameServerProcessPacketNumbers)PacketNumber).ToString() + "] from Game Server, Processing response..", Log.LogType.RECEIVED);
+                            //Log.log("Packet Received [#" + PacketNumber.ToString("000") + " " + ((GameServerProcessPacketNumbers)PacketNumber).ToString() + "] from Game Server, Processing response..", Log.LogType.RECEIVED);
 
                             obj = new object[3];
                             obj[0] = Source;
@@ -46,7 +47,7 @@ namespace Core
                             {
                                 return;
                             }
-                            Log.log("Packet Received [#" + PacketNumber.ToString("000") + " " + ((ClientProcessPacketNumbers)PacketNumber).ToString() + "] from Client Index " + index.ToString() + ", Processing response..", Log.LogType.RECEIVED);
+                            //Log.log("Packet Received [#" + PacketNumber.ToString("000") + " " + ((ClientProcessPacketNumbers)PacketNumber).ToString() + "] from Client Index " + index.ToString() + ", Processing response..", Log.LogType.RECEIVED);
 
                             obj = new object[3];
                             obj[0] = Source;
@@ -60,7 +61,7 @@ namespace Core
                             {
                                 return;
                             }
-                            Log.log("Packet Received [#" + PacketNumber.ToString("000") + " " + ((SyncServerProcessPacketNumbers)PacketNumber).ToString() + "] from Synchronization Server, Processing response..", Log.LogType.RECEIVED);
+                            //Log.log("Packet Received [#" + PacketNumber.ToString("000") + " " + ((SyncServerProcessPacketNumbers)PacketNumber).ToString() + "] from Synchronization Server, Processing response..", Log.LogType.RECEIVED);
 
                             obj = new object[3];
                             obj[0] = Source;
@@ -81,3 +82,4 @@ namespace Core
             }
         }
     }
+}

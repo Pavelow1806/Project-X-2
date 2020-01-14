@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace Core
 {
+    public enum AssetType
+    {
+        CLIENT,
+        SERVER
+    }
+    public enum ConnectionType
+    {
+        GAMESERVER,
+        CLIENT,
+        LOGINSERVER,
+        SYNCSERVER,
+        UNKNOWN
+    }
+
+    #region Client
     public enum ClientSendPacketNumbers
     {
         Invalid,
@@ -23,6 +38,9 @@ namespace Core
         CharacterListRequest,
         CreateCharacter
     }
+    #endregion
+
+    #region Game Server
     public enum GameServerProcessPacketNumbers
     {
         Invalid,
@@ -36,6 +54,9 @@ namespace Core
         WhiteList,
         CreateCharacterResponse
     }
+    #endregion
+
+    #region Sync Server
     public enum SyncServerProcessPacketNumbers
     {
         Invalid,
@@ -48,4 +69,5 @@ namespace Core
         RegistrationNotification,
         CreateCharacterResponse
     }
+    #endregion
 }

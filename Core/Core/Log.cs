@@ -21,8 +21,6 @@ namespace Core
     }
     public class Log
     {
-        private const string DefaultLogFolderName = "Logs";
-        private const string DefaultLogFileName = "Server.log";
         private static string LogFileName = string.Empty;
         private static string LogLocation = string.Empty;
 
@@ -35,10 +33,10 @@ namespace Core
         public static void Init()
         {
             // Load log location
-            LogLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), DefaultLogFolderName);
+            LogLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Constants.DefaultLogFolderName);
             if (!Directory.Exists(LogLocation)) Directory.CreateDirectory(LogLocation);
             // Load log file name
-            LogFileName = ConfigurationManager.AppSettings["LogFileName"] ?? DefaultLogFileName;
+            LogFileName = ConfigurationManager.AppSettings["LogFileName"] ?? Constants.DefaultLogFileName;
             // Build full path
             fullPath = Path.Combine(LogLocation, LogFileName);
 

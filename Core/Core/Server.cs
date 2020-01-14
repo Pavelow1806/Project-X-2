@@ -4,64 +4,64 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace Core
 {
     class Server : Connection
     {
-        private DateTime TimeUntilRelease = default(DateTime);
-        private Thread AuthenticationThread;
+        private System.Timers.Timer AuthenticateTimer = new System.Timers.Timer();
+        public event EventHandler<ServerConnectionEventArgs> OnAuthenticate;
+        public event EventHandler<ServerConnectionEventArgs> OnClose;
+        private bool AuthenticationSuccessful = false;
 
-        public bool Authenticated = false;
+        public bool Authenticated
+        {
+            get
+            {
+                if (Network.instance.Servers.ContainsKey(Type)) return true;
+                return false;
+            }
+        }
 
         public Server(ConnectionType type, int id) :
             base(type, id)
         {
-
+            Network.instance.RegisterServerEvents(this);
         }
 
         public override void Start()
         {
             base.Start();
-            //TimeUntilRelease = ConnectedTime.AddSeconds(Network.SecondsToAuthenticateBeforeDisconnect);
-            //AuthenticationThread = new Thread(new ThreadStart(CheckAuthentication));
-            //AuthenticationThread.Start();
+
+            Log.Write(LogType.Information, "Waiting for server to authenticate..");
+
+            AuthenticateTimer.Interval = Constants.SecondsToAuthenticateBeforeDisconnect;
+            AuthenticateTimer.Elapsed += OnAuthenticationExpiry;
+            AuthenticateTimer.AutoReset = false;
+            AuthenticateTimer.Enabled = true;
         }
 
         public override void Close()
         {
-            //Network.instance.GameServerAuthenticated = false;
             base.Close();
+            OnClose(this, new ServerConnectionEventArgs(this, Type));
         }
-        //public void CheckAuthentication()
-        //{
-        //    while (DateTime.Now < TimeUntilRelease || !Authenticated)
-        //    {
-        //        Thread.Sleep(50);
-        //    }
-        //    if (Authenticated)
-        //    {
-        //        string msg = "";
-        //        if (Network.instance.SyncServerAuthenticated && Network.instance.GameServerAuthenticated)
-        //        {
-        //            msg = "ready for client connections.";
-        //        }
-        //        else if (Network.instance.SyncServerAuthenticated && !Network.instance.GameServerAuthenticated)
-        //        {
-        //            msg = "waiting for game server.";
-        //        }
-        //        else if (!Network.instance.SyncServerAuthenticated && Network.instance.GameServerAuthenticated)
-        //        {
-        //            msg = "waiting for synchronization server.";
-        //        }
-        //        Log.log("Authentication of " + Type.ToString() + " successful, " + msg, Log.LogType.SUCCESS);
-        //    }
-        //    else
-        //    {
-        //        Log.log("Authentication of Server failed, releasing socket.", Log.LogType.ERROR);
-        //        Close();
-        //    }
-        //    AuthenticationThread.Join();
-        //}
+
+        private void OnAuthenticationExpiry(Object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (AuthenticationSuccessful) return;
+            AuthenticateTimer.Enabled = false;
+            Log.Write(LogType.Error, $"Authentication of server on IP {IP} failed, connection closed");
+            Close();
+            OnClose(this, new ServerConnectionEventArgs(this, Type));
+        }
+
+        public void Authenticate(ConnectionType type)
+        {
+            // TODO: send packet to authenticate this server
+            AuthenticationSuccessful = true;
+            OnAuthenticate(this, new ServerConnectionEventArgs(this, type));
+        }
     }
 }

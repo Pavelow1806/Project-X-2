@@ -12,6 +12,16 @@ namespace Core
         public bool LoggedIn = false;
         public DateTime LoggedInTime = default(DateTime);
 
+        public bool Available 
+        { 
+            get 
+            { 
+                if (Socket == null) 
+                    return true;
+                return false;
+            } 
+        }
+
         public Client(ConnectionType type, int id) :
             base(type, id)
         {
