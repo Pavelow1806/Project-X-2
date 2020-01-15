@@ -10,7 +10,6 @@ namespace Login_Server
 {
     class Status
     {
-        readonly SocketManagement Console = new SocketManagement("Console", 1991, true, ConnectionType.Inbound);
         Thread ConsoleThread;
         public Status()
         {

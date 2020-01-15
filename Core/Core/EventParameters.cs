@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class ServerConnectionEventArgs : EventArgs
+    public class ServerConnectionEventArgs : EventArgs
     {
         public Server Server;
         public ConnectionType Type;
@@ -14,6 +14,15 @@ namespace Core
         {
             Server = server;
             Type = type;
+        }
+    }
+
+    public class PacketEventArgs : EventArgs
+    {
+        public Packet Packet;
+        public PacketEventArgs(Packet packet)
+        {
+            Packet = packet;
         }
     }
 }

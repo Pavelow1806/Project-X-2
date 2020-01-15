@@ -7,22 +7,23 @@ using Core;
 
 namespace Login_Server
 {
-    class Send
+    class SendPacket
     {
-
         #region Client Send Packets
         public static void LoginResponse(int index, byte response)
         {
             try
             {
                 ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer();
-                BuildBasePacket((int)ClientSendPacketNumbers.LoginResponse, ref buffer);
-                buffer.WriteByte(response);
-                sendData(ConnectionType.CLIENT, (int)ClientSendPacketNumbers.LoginResponse, index, buffer.ToArray());
+                List<object> Contents = new List<object>();
+                SendData.BuildBasePacket((int)ClientSendPacketNumbers.LoginResponse, ref buffer, ref Contents);
+                buffer.WriteByte(response, Contents);
+                Packet packet = new Packet((int)ClientSendPacketNumbers.LoginResponse, ClientSendPacketNumbers.LoginResponse.ToString(), index, ConnectionType.CLIENT, ConnectionType.LOGINSERVER, Contents, buffer.ToArray());
+                SendData.Send(packet);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.log("Building Login Response packet failed. > " + e.Message, Log.LogType.ERROR);
+                Log.Write("Building Login Response packet failed", ex);
                 return;
             }
         }
@@ -31,13 +32,14 @@ namespace Login_Server
             try
             {
                 ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer();
-                BuildBasePacket((int)ClientSendPacketNumbers.ConfirmWhiteList, ref buffer);
-
-                sendData(ConnectionType.CLIENT, (int)ClientSendPacketNumbers.ConfirmWhiteList, index, buffer.ToArray());
+                List<object> Contents = new List<object>();
+                SendData.BuildBasePacket((int)ClientSendPacketNumbers.ConfirmWhiteList, ref buffer);
+                Packet packet = new Packet((int)ClientSendPacketNumbers.ConfirmWhiteList, ClientSendPacketNumbers.ConfirmWhiteList.ToString(), index, ConnectionType.CLIENT, ConnectionType.LOGINSERVER, Contents, buffer.ToArray());
+                SendData.Send(packet);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.log("Building White List Confirmation packet failed. > " + e.Message, Log.LogType.ERROR);
+                Log.Write("Building White List Confirmation packet failed", ex);
                 return;
             }
         }
@@ -46,14 +48,16 @@ namespace Login_Server
             try
             {
                 ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer();
-                BuildBasePacket((int)ClientSendPacketNumbers.RegistrationResponse, ref buffer);
-                buffer.WriteByte(success);
-                buffer.WriteString(response);
-                sendData(ConnectionType.CLIENT, (int)ClientSendPacketNumbers.RegistrationResponse, index, buffer.ToArray());
+                List<object> Contents = new List<object>();
+                SendData.BuildBasePacket((int)ClientSendPacketNumbers.RegistrationResponse, ref buffer);
+                buffer.WriteByte(success, Contents);
+                buffer.WriteString(response, Contents);
+                Packet packet = new Packet((int)ClientSendPacketNumbers.RegistrationResponse, index, ConnectionType.CLIENT, ConnectionType.LOGINSERVER, Contents, buffer.ToArray());
+                SendData.Send(packet);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.log("Building Registration Response packet failed. > " + e.Message, Log.LogType.ERROR);
+                Log.Write("Building Registration Response packet failed", ex);
                 return;
             }
         }

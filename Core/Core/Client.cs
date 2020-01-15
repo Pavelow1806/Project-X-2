@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class Client : Connection
+    public class Client : Connection
     {
         public string Email = "";
         public bool LoggedIn = false;

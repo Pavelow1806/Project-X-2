@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class SendData
+    public class SendData
     {
-        private static void sendData(Packet packet)
+        public  static void Send(Packet packet)
         {
             try
             {
+                // TODO: Send packet to either client or server
                 switch (packet.Destination)
                 {
                     case ConnectionType.GAMESERVER:
@@ -36,10 +37,10 @@ namespace Core
                 Log.Write($"An error occurred when attempting to send the following packet:\n{packet.ToString() ?? ""}", ex);
             }
         }
-        private static void BuildBasePacket(int packetNumber, ref ByteBuffer.ByteBuffer buffer)
+        public static void BuildBasePacket(int packetNumber, ref ByteBuffer.ByteBuffer buffer, ref List<object> Contents)
         {
-            buffer.WriteInteger((int)ConnectionType.LOGINSERVER);
-            buffer.WriteInteger(packetNumber);
+            buffer.WriteInteger((int)ConnectionType.LOGINSERVER, Contents);
+            buffer.WriteInteger(packetNumber, Contents);
         }
     }
 }

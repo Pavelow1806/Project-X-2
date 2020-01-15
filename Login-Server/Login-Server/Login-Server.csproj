@@ -53,13 +53,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base.cs" />
+    <Compile Include="ProcessPacket.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="Send.cs" />
+    <Compile Include="SendPacket.cs" />
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
     </Compile>

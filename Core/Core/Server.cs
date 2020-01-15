@@ -8,7 +8,7 @@ using System.Timers;
 
 namespace Core
 {
-    class Server : Connection
+    public class Server : Connection
     {
         private System.Timers.Timer AuthenticateTimer = new System.Timers.Timer();
         public event EventHandler<ServerConnectionEventArgs> OnAuthenticate;

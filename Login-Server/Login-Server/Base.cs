@@ -10,13 +10,20 @@ namespace Login_Server
 {
     class Base
     {
+        private ProcessPacket ProcessPacket = new ProcessPacket();
+        private Network network = new Network();
         public Base() 
         {
-            Status status = new Status();
+            network.OnServerAuthenticated += OnServerAuthenticated;
         }
         ~Base()
         {
             Log.Write(LogType.Information, "Server shutting down.");
+        }
+        public void OnServerAuthenticated(object sender, ServerConnectionEventArgs e)
+        {
+            // Once the server has authenticated, register the process event to begin processing the packets
+            e.Server.OnPacketReceived += ProcessPacket.Process;
         }
     }
 }

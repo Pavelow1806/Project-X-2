@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class Connection
+    public class Connection
     {
         public ConnectionType Type;
 
@@ -31,6 +31,11 @@ namespace Core
         private byte[] ReadBuff;
         public TcpClient Socket;
         public NetworkStream Stream;
+        #endregion
+
+        #region Events
+        public EventHandler<PacketEventArgs> OnPacketReceived;
+        public EventHandler<PacketEventArgs> OnPacketSent;
         #endregion
 
         public Connection(ConnectionType type, int id)
@@ -130,7 +135,9 @@ namespace Core
                     }
 
                     // Process the packet
-                    ProcessData.processData(Index, Bytes);
+                    Packet packet = ProcessData.Process(this, Index, Bytes);
+
+                    OnPacketReceived(this, new PacketEventArgs(packet));
 
                     Stream.BeginRead(ReadBuff, 0, Socket.ReceiveBufferSize, OnReceiveData, null);
                 }

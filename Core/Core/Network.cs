@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class Network
+    public class Network
     {
         #region Locking
         private static readonly object lockObj = new object();
@@ -46,6 +46,10 @@ namespace Core
         #region TCP
         private Listener ServerListener = new Listener(IPAddress.Parse("127.0.0.1"), Constants.ServerPort, AssetType.SERVER);
         private Listener ClientListener = new Listener(IPAddress.Any, Constants.ClientPort);
+        #endregion
+
+        #region Events
+        public EventHandler<ServerConnectionEventArgs> OnServerAuthenticated;
         #endregion
 
         public Network() {}
@@ -98,6 +102,7 @@ namespace Core
             Servers.Add(e.Type, e.Server);
             ServerQueue.Remove(e.Server);
             Log.Write(LogType.Information, $"{e.Type.ToString()} successfully authenticated");
+            OnServerAuthenticated(this, e);
         }
         private void Server_OnClose(object sender, ServerConnectionEventArgs e)
         {

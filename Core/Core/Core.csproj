@@ -49,7 +49,6 @@
     <Compile Include="Connection.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EventParameters.cs" />
-    <Compile Include="IProcessData.cs" />
     <Compile Include="Listener.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Network.cs" />
