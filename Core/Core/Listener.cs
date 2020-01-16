@@ -14,10 +14,10 @@ namespace Core
         private static readonly object lockObj = new object();
         #endregion
 
-        AssetType Type = AssetType.CLIENT;
+        readonly AssetType Type = AssetType.CLIENT;
 
-        public Listener(IPEndPoint localEP, AssetType type = AssetType.CLIENT) : base(localEP) { }
-        public Listener(IPAddress localaddr, int port, AssetType type = AssetType.CLIENT) : base(localaddr, port) { }
+        public Listener(IPEndPoint localEP, AssetType type = AssetType.CLIENT) : base(localEP) { Type = type; }
+        public Listener(IPAddress localaddr, int port, AssetType type = AssetType.CLIENT) : base(localaddr, port) { Type = type; }
 
         public void StartAccept()
         {
@@ -44,10 +44,10 @@ namespace Core
                             bool SocketFree = false;
                             for (int i = 0; i < Constants.MaxConnections; i++)
                             {
-                                if (Network.instance.Clients[i].Available)
+                                if (Network.Instance.Clients[i].Available)
                                 {
                                     SocketFree = true;
-                                    Client client = Network.instance.Clients[i];
+                                    Client client = Network.Instance.Clients[i];
                                     client.Connected = true;
                                     client.Socket = socket;
                                     client.IP = socket.Client.RemoteEndPoint.ToString();
@@ -78,7 +78,7 @@ namespace Core
                             server.Username = "System";
                             server.SessionID = "System";
 
-                            Network.instance.ServerQueue.Add(server);
+                            Network.Instance.ServerQueue.Add(server);
 
                             Log.Write(LogType.Connection, $"Server connected with IP {server.IP} and was added to the Server Queue, waiting for handshake..");
                         }

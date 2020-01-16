@@ -8,8 +8,29 @@ namespace Core
 {
     public class Packet
     {
-        public ConnectionType Destination;
-        public ConnectionType Source;
+        public ConnectionType Destination = ConnectionType.NONE;
+        public AssetType DestinationType
+        {
+            get
+            {
+                if (Destination != ConnectionType.NONE)
+                {
+                    if (Destination != ConnectionType.CLIENT)
+                    {
+                        return AssetType.SERVER;
+                    }
+                    else
+                    {
+                        return AssetType.CLIENT;
+                    }
+                }
+                else
+                {
+                    return AssetType.NONE;
+                }
+            }
+        }
+        public ConnectionType Source = ConnectionType.NONE;
         public int Index;
 
         public int PacketNumber;

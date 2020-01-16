@@ -8,16 +8,28 @@ namespace Core
 {
     public enum AssetType
     {
+        NONE,
         CLIENT,
         SERVER
     }
     public enum ConnectionType
     {
+        NONE,
         GAMESERVER,
         CLIENT,
         LOGINSERVER,
         SYNCSERVER,
         UNKNOWN
+    }
+    public enum LogType
+    {
+        Information,
+        Error,
+        Debug,
+        Warning,
+        Connection,
+        TransmissionOut,
+        TransmissionIn
     }
 
     #region Client

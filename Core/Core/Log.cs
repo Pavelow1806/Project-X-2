@@ -11,14 +11,6 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public enum LogType
-    {
-        Information,
-        Error,
-        Debug,
-        Warning,
-        Connection
-    }
     public class Log
     {
         private static string LogFileName = string.Empty;
@@ -92,6 +84,10 @@ namespace Core
                     return "WARN ";
                 case LogType.Connection:
                     return "CONN";
+                case LogType.TransmissionOut:
+                    return "TRO ";
+                case LogType.TransmissionIn:
+                    return "TRI ";
                 default:
                     return "NONE";
             }

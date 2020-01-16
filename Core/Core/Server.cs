@@ -10,7 +10,7 @@ namespace Core
 {
     public class Server : Connection
     {
-        private System.Timers.Timer AuthenticateTimer = new System.Timers.Timer();
+        private readonly System.Timers.Timer AuthenticateTimer = new System.Timers.Timer();
         public event EventHandler<ServerConnectionEventArgs> OnAuthenticate;
         public event EventHandler<ServerConnectionEventArgs> OnClose;
         private bool AuthenticationSuccessful = false;
@@ -19,7 +19,7 @@ namespace Core
         {
             get
             {
-                if (Network.instance.Servers.ContainsKey(Type)) return true;
+                if (Network.Instance.Servers.ContainsKey(Type)) return true;
                 return false;
             }
         }
@@ -27,7 +27,7 @@ namespace Core
         public Server(ConnectionType type, int id) :
             base(type, id)
         {
-            Network.instance.RegisterServerEvents(this);
+            Network.Instance.RegisterServerEvents(this);
         }
 
         public override void Start()

@@ -10,7 +10,7 @@ namespace Core
     {
         public string Email = "";
         public bool LoggedIn = false;
-        public DateTime LoggedInTime = default(DateTime);
+        public DateTime LoggedInTime = default;
 
         public bool Available 
         { 
@@ -39,7 +39,7 @@ namespace Core
             Username = "";
             Email = "";
             LoggedIn = false;
-            LoggedInTime = default(DateTime);
+            LoggedInTime = default;
             base.Close();
         }
     }

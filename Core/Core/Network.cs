@@ -15,7 +15,7 @@ namespace Core
         #endregion
 
         private static Network _instance = null;
-        public static Network instance
+        public static Network Instance
         {
             get
             {
@@ -30,8 +30,8 @@ namespace Core
             }
         }
 
-        private SendData SD = new SendData();
-        private ProcessData PD = new ProcessData();
+        //private readonly SendData SD = new SendData();
+        //private readonly ProcessData PD = new ProcessData();
 
         public static bool Running = false;
 
@@ -44,8 +44,8 @@ namespace Core
         #endregion
 
         #region TCP
-        private Listener ServerListener = new Listener(IPAddress.Parse("127.0.0.1"), Constants.ServerPort, AssetType.SERVER);
-        private Listener ClientListener = new Listener(IPAddress.Any, Constants.ClientPort);
+        private readonly Listener ServerListener = new Listener(IPAddress.Parse("127.0.0.1"), Constants.ServerPort, AssetType.SERVER);
+        private readonly Listener ClientListener = new Listener(IPAddress.Any, Constants.ClientPort);
         #endregion
 
         #region Events

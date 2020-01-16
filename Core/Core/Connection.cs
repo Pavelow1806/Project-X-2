@@ -50,7 +50,6 @@ namespace Core
             ConnectionThread = new Thread(new ThreadStart(BeginThread));
             ConnectionThread.Start();
         }
-
         public virtual void Close()
         {
             lock (lockObj)
@@ -113,7 +112,6 @@ namespace Core
             StartAccept();
             OnReceiveData(result);
         }
-
         public void OnReceiveData(IAsyncResult result)
         {
             lock (lockObj)
