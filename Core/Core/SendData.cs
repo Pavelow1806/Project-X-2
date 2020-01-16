@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public class SendData
+    public static class SendData
     {
-        public  static void Send(Packet packet)
+        public static void Send(Packet packet)
         {
             try
             {
@@ -44,14 +44,13 @@ namespace Core
             }
             catch (Exception ex)
             {
-                // Output error message
-                Log.Write($"An error occurred when attempting to send the following packet:\n{packet.ToString() ?? ""}", ex);
+                Log.Write(ex);
             }
         }
         public static void BuildBasePacket(int packetNumber, ref ByteBuffer.ByteBuffer buffer, ref List<object> Contents)
         {
-            buffer.WriteInteger((int)ConnectionType.LOGINSERVER, Contents);
-            buffer.WriteInteger(packetNumber, Contents);
+            buffer.WriteInteger((int)ConnectionType.LOGINSERVER);
+            buffer.WriteInteger(packetNumber);
         }
 
         private static string CheckDestination(int Index, out Client client)
@@ -61,12 +60,17 @@ namespace Core
                 client = null;
                 return $"The Index {Index.ToString()} was less than 0 or greater than {Constants.MaxConnections.ToString()}.";
             }
-            else if (Network.Instance.Clients[Index] == null)
+            Client c = null;
+            lock (Network.Instance.Clients)
             {
-                client = null;
-                return $"The Client object at Index {Index.ToString()} was null.";
+                if (Network.Instance.Clients[Index] == null)
+                {
+                    client = null;
+                    return $"The Client object at Index {Index.ToString()} was null.";
+                }
+
+                c = Network.Instance.Clients[Index];
             }
-            Client c = Network.Instance.Clients[Index];
             if (!c.Connected)
             {
                 client = null;
@@ -82,11 +86,8 @@ namespace Core
                 client = null;
                 return $"The Clients Network Stream on Index {Index.ToString()} is not able to write to the Network Stream.";
             }
-            else
-            {
                 client = c;
                 return "";
-            }
         }
         private static string CheckDestination(ConnectionType connectionType, out Server server)
         {
@@ -95,15 +96,19 @@ namespace Core
                 server = null;
                 return $"The Server connection type parameter {connectionType.ToString()} was not valid.";
             }
-            else if (!Network.Instance.Servers.ContainsKey(connectionType))
+            Server s = null;
+            lock (Network.Instance.Servers)
             {
-                server = null;
-                if (Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
-                    return $"The Server with connection type {connectionType.ToString()} has connected, but has not yet authenticated.";
-                else
-                    return $"The Server with connection type {connectionType.ToString()} is not connected.";
+                if (!Network.Instance.Servers.ContainsKey(connectionType))
+                {
+                    server = null;
+                    if (Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
+                        return $"The Server with connection type {connectionType.ToString()} has connected, but has not yet authenticated.";
+                    else
+                        return $"The Server with connection type {connectionType.ToString()} is not connected.";
+                }
+                s = Network.Instance.Servers[connectionType];
             }
-            Server s = Network.Instance.Servers[connectionType];
             if (!s.Connected)
             {
                 server = null;
@@ -124,6 +129,17 @@ namespace Core
                 server = s;
                 return "";
             }
+        }
+
+        /// <summary>
+        /// Send the authentication packet to the destination server.
+        /// </summary>
+        /// <param name="Server">This server (this)</param>
+        /// <param name="Destination">The Destination server</param>
+        public static void Authenticate(Server Server, Server Destination)
+        {
+            List<object> Contents = new List<object>();
+            ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
         }
     }
 }

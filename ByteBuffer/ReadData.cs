@@ -24,6 +24,7 @@ namespace ByteBuffer
                     readpos += Len;
                 }
             }
+            Contents.Add(ret);
             return ret;
         }
 
@@ -42,6 +43,7 @@ namespace ByteBuffer
                 {
                     readpos += 1;
                 }
+                Contents.Add(ret);
                 return ret;
             }
             else
@@ -63,6 +65,7 @@ namespace ByteBuffer
             {
                 readpos += length;
             }
+            Contents.Add(ret);
             return ret;
         }
 
@@ -81,6 +84,7 @@ namespace ByteBuffer
                 {
                     readpos += 4;
                 }
+                Contents.Add(ret);
                 return ret;
             }
             else
@@ -104,6 +108,7 @@ namespace ByteBuffer
                 {
                     readpos += 4;
                 }
+                Contents.Add(ret);
                 return ret;
             }
             else

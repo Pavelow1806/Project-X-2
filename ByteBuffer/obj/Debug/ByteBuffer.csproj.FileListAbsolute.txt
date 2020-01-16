@@ -12,6 +12,5 @@ C:\Users\james\Documents\GitHub\Project-X\ByteBuffer\obj\Debug\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X\ByteBuffer\obj\Debug\ByteBuffer.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\ByteBuffer\bin\Debug\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X-2\ByteBuffer\bin\Debug\ByteBuffer.pdb
-C:\Users\james\Documents\GitHub\Project-X-2\ByteBuffer\obj\Debug\ByteBuffer.csprojAssemblyReference.cache
 C:\Users\james\Documents\GitHub\Project-X-2\ByteBuffer\obj\Debug\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X-2\ByteBuffer\obj\Debug\ByteBuffer.pdb

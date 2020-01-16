@@ -56,7 +56,7 @@ namespace Core
             if (!ready) Init();
             using (StreamWriter writer = new StreamWriter(fullPath, true))
             {
-                writer.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.StackTrace}");
+                writer.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
             }
         }
         public static void Write(string Message, Exception exception)

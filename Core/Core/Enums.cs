@@ -6,6 +6,18 @@ using System.Threading.Tasks;
 
 namespace Core
 {
+    #region Ports
+    public enum Ports
+    {
+        LoginServerPort = 5610,
+        LoginClientPort = 5611,
+        GameServerPort = 5612,
+        GameClientPort = 5613,
+        SyncServerPort = 5614,
+        ClientServerPort = 5615
+    }
+    #endregion
+
     public enum AssetType
     {
         NONE,
@@ -18,8 +30,7 @@ namespace Core
         GAMESERVER,
         CLIENT,
         LOGINSERVER,
-        SYNCSERVER,
-        UNKNOWN
+        SYNCSERVER
     }
     public enum LogType
     {

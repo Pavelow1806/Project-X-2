@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,7 +13,8 @@ namespace Core
     {
         public ConnectionType Type;
 
-        private Thread ConnectionThread;
+        private Thread DataThread;
+        protected Thread OutgoingConnectionThread;
 
         #region Locking
         private static readonly object lockObj = new object();
@@ -20,6 +22,7 @@ namespace Core
 
         #region Connection
         public int Index = -1;
+        public int Port = 0;
         public string IP = "";
         public string Username = "";
         public string SessionID = "";
@@ -31,6 +34,9 @@ namespace Core
         private byte[] ReadBuff;
         public TcpClient Socket;
         public NetworkStream Stream;
+        public StreamReader Reader = null;
+        public StreamWriter Writer = null;
+        public byte[] asyncBuff = null;
         #endregion
 
         #region Events
@@ -43,12 +49,19 @@ namespace Core
             Type = type;
             Index = id;
         }
+        public Connection(ConnectionType type, int id, int port, string ip)
+        {
+            Port = port;
+            IP = ip;
+            Type = type;
+            Index = id;
+        }
 
         public virtual void Start()
         {
             ConnectedTime = DateTime.Now;
-            ConnectionThread = new Thread(new ThreadStart(BeginThread));
-            ConnectionThread.Start();
+            DataThread = new Thread(new ThreadStart(BeginThread));
+            DataThread.Start();
         }
         public virtual void Close()
         {
@@ -64,19 +77,32 @@ namespace Core
 
                     // Network
                     ReadBuff = null;
-                    if (Stream != null)
-                    {
-                        Stream.Close();
-                        Stream = null;
-                    }
+                    asyncBuff = null;
                     if (Socket != null)
                     {
                         Socket.Close();
                         Socket = null;
                     }
+                    if (Stream != null)
+                    {
+                        Stream.Close();
+                        Stream = null;
+                    }
+                    if (Reader != null)
+                    {
+                        Reader.Close();
+                        Reader = null;
+                    }
+                    if (Writer != null)
+                    {
+                        Writer.Close();
+                        Writer = null;
+                    }
+
+                    Connected = false;
 
                     // Rejoin main thread
-                    ConnectionThread.Join();
+                    DataThread.Join();
                 }
             }
         }

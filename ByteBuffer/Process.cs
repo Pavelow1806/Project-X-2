@@ -6,13 +6,15 @@ namespace ByteBuffer
 {
     public partial class ByteBuffer : IDisposable
     {
-        List<byte> Buff;
+        readonly List<byte> Buff;
         byte[] readBuff;
         int readpos;
         bool buffUpdate = false;
+        public List<object> Contents { get; }
 
-        public ByteBuffer()
+        public ByteBuffer(List<object> contents)
         {
+            Contents = contents;
             Buff = new List<byte>();
             readpos = 0;
         }

@@ -10,9 +10,7 @@ namespace Core
 {
     class Listener : TcpListener
     {
-        #region Locking
         private static readonly object lockObj = new object();
-        #endregion
 
         readonly AssetType Type = AssetType.CLIENT;
 
@@ -68,7 +66,7 @@ namespace Core
                     }
                     else if (Type == AssetType.SERVER)
                     {
-                        Server server = new Server(ConnectionType.UNKNOWN, -1);
+                        Server server = new Server(ConnectionType.NONE, -1);
 
                         try
                         {

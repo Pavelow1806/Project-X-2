@@ -16,11 +16,10 @@ namespace Core
         #region Network
         public const int MaxConnections = 100;
         public const int MaxServers = 10;
-        public const int ServerPort = 5610;
         public const int ClientPort = 5600;
         public const int BufferSize = 4096;
-        // Milliseconds
-        public const double SecondsToAuthenticateBeforeDisconnect = 5000.0;
+        public const int MillisecondsBetweenAttemptingConnect = 1000.0;
+        public const double MillisecondsToAuthenticateBeforeDisconnect = 5000.0;
         #endregion
     }
 }
