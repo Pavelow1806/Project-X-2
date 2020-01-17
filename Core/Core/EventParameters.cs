@@ -9,10 +9,12 @@ namespace Core
     public class ServerConnectionEventArgs : EventArgs
     {
         public Server Server;
+        public string IP;
         public ConnectionType Type;
-        public ServerConnectionEventArgs(Server server, ConnectionType type)
+        public ServerConnectionEventArgs(Server server, string ip, ConnectionType type)
         {
             Server = server;
+            IP = ip;
             Type = type;
         }
     }

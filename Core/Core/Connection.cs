@@ -69,12 +69,6 @@ namespace Core
             {
                 if (Connected)
                 {
-                    // Connection
-                    IP = "";
-                    Username = "";
-                    SessionID = "";
-                    ConnectedTime = default;
-
                     // Network
                     ReadBuff = null;
                     asyncBuff = null;

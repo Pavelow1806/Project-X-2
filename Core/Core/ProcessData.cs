@@ -14,9 +14,9 @@ namespace Core
         {
             try
             {
-                ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer();
                 List<object> Contents = new List<object>();
-                buffer.WriteBytes(data, Contents);
+                ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
+                buffer.WriteBytes(data);
 
                 ConnectionType Source = (ConnectionType)buffer.ReadInteger();
                 int PacketNumber = buffer.ReadInteger();

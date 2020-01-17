@@ -10,21 +10,8 @@ namespace Core
 {
     public class Network
     {
-        private static Network _instance = null;
-        public static Network Instance
-        {
-            get
-            {
-                lock (_instance)
-                {
-                    if (_instance == null)
-                    {
-                        _instance = new Network();
-                    }
-                    return _instance;
-                }
-            }
-        }
+        public static Network Instance { get; private set; }
+        private static void AssignInstance(Network network) { Instance = network; }
 
         public static bool Running = false;
 
@@ -37,8 +24,8 @@ namespace Core
         #endregion
 
         public readonly AssetType MyAssetType = AssetType.NONE;
-        private ConnectionType MyConnectionType = ConnectionType.NONE;
-        private int? clientPort
+        private readonly ConnectionType MyConnectionType = ConnectionType.NONE;
+        private int? ClientPort
         {
             get
             {
@@ -59,7 +46,7 @@ namespace Core
                 }
             }
         }
-        private int? serverPort
+        private int? ServerPort
         {
             get
             {
@@ -75,11 +62,14 @@ namespace Core
                         return (int)Ports.LoginServerPort;
                     case ConnectionType.SYNCSERVER:
                         return (int)Ports.SyncServerPort;
+                    case ConnectionType.TOOL:
+                        return (int)Ports.ToolServerPort;
                     default:
                         return null;
                 }
             }
         }
+        private readonly string ClusterIP = "";
 
         #region TCP
         private readonly Listener ServerListener = null;
@@ -90,31 +80,36 @@ namespace Core
         public EventHandler<ServerConnectionEventArgs> OnServerAuthenticated;
         #endregion
 
-        public Network(ConnectionType type) 
-        { 
+        public Network(ConnectionType type, string ServerClusterIP = Constants.ClusterLocalIP) 
+        {
+            AssignInstance(this);
+            ClusterIP = ServerClusterIP;
             MyConnectionType = type;
-            if (type != ConnectionType.CLIENT)
+            if (type != ConnectionType.CLIENT && type != ConnectionType.TOOL)
                 MyAssetType = AssetType.SERVER;
             else if (type != ConnectionType.NONE)
-                MyAssetType = AssetType.SERVER;
+                if (type == ConnectionType.CLIENT)
+                    MyAssetType = AssetType.CLIENT;
+                else
+                    MyAssetType = AssetType.TOOL;
             else
                 MyAssetType = AssetType.NONE;
 
             int Port;
 
-            int? ServerPort = serverPort;
-            if (serverPort != null)
+            int? ServerPort = this.ServerPort;
+            if (ServerPort != null)
             {
                 Port = (int)ServerPort;
-                ServerListener = new Listener(IPAddress.Parse("127.0.0.1"), Port, AssetType.SERVER);
+                ServerListener = new Listener(IPAddress.Parse(ClusterIP), Port, AssetType.SERVER);
             }
             else
             {
                 Log.Write(LogType.Error, "The port returned for the server listener was null.");
             }
 
-            int? ClientPort = clientPort;
-            if (clientPort != null)
+            int? ClientPort = this.ClientPort;
+            if (ClientPort != null)
             {
                 Port = (int)ServerPort;
                 ClientListener = new Listener(IPAddress.Any, Port);
@@ -125,6 +120,10 @@ namespace Core
             }
         }
 
+        /// <summary>
+        /// Launch the server by starting the listeners and attempting to connect if required.
+        /// </summary>
+        /// <returns>Whether startup was successful.</returns>
         public bool LaunchServer()
         {
             try
@@ -164,6 +163,9 @@ namespace Core
             return Running = true;
         }
 
+        /// <summary>
+        /// Attempt to connect to the other servers in the cluster
+        /// </summary>
         public void Connect()
         {
             if (MyAssetType == AssetType.NONE)
@@ -171,17 +173,70 @@ namespace Core
                 Log.Write(LogType.Error, $"The asset type I have is {MyAssetType.ToString()}, which is invalid");
                 return;
             }
-            if (MyAssetType == AssetType.CLIENT)
+            if (MyAssetType == AssetType.TOOL)
             {
-                // If this is a client, start connecting to the login server
-                Server LoginServer = new Server(ConnectionType.LOGINSERVER, -1);
-                Servers.Add(ConnectionType.LOGINSERVER, LoginServer);
-                LoginServer.StartConnecting();
+                ConnectToServer(ConnectionType.LOGINSERVER);
+                ConnectToServer(ConnectionType.GAMESERVER);
+                ConnectToServer(ConnectionType.SYNCSERVER);
+            }
+            else if (MyAssetType == AssetType.CLIENT)
+            {
+                ConnectToServer(ConnectionType.LOGINSERVER);
             }
             else
             {
                 // If this is a server, connect to the other servers in the cluster
+                switch (MyConnectionType)
+                {
+                    case ConnectionType.NONE:
+                        Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
+                        return;
+                    case ConnectionType.CLIENT:
+                        Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
+                        return;
+                    case ConnectionType.GAMESERVER:
+                        ConnectToServer(ConnectionType.LOGINSERVER);
+                        ConnectToServer(ConnectionType.SYNCSERVER);
+                        ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                        return;
+                    case ConnectionType.LOGINSERVER:
+                        ConnectToServer(ConnectionType.GAMESERVER);
+                        ConnectToServer(ConnectionType.SYNCSERVER);
+                        ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                        return;
+                    case ConnectionType.SYNCSERVER:
+                        ConnectToServer(ConnectionType.LOGINSERVER);
+                        ConnectToServer(ConnectionType.GAMESERVER);
+                        ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                        break;
+                    default:
+                        Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
+                        return;
+                }
+            }
+        }
 
+        private void ConnectToServer(ConnectionType Destination, int MaxConnectionAttempts = -1)
+        {
+            int Port;
+            if (!Network.Instance.ServerAuthenticated(Destination))
+            {
+                int? ServerPort = GetDestinationPort(Destination);
+                if (ServerPort != null)
+                {
+                    Port = (int)ServerPort;
+                    Server Server = new Server(Destination, Port);
+                    Servers.Add(Destination, Server);
+                    Server.StartConnecting(MaxConnectionAttempts);
+                }
+                else
+                {
+                    Log.Write(LogType.Error, Destination, "The port returned for the server was null.");
+                }
+            }
+            else
+            {
+                Log.Write(LogType.Connection, Destination, "The connection to the server has already been established");
             }
         }
 
@@ -224,8 +279,30 @@ namespace Core
                         return (int)Ports.SyncServerPort;
                     else
                         return null;
+                case ConnectionType.TOOL:
+                    if (MyAssetType == AssetType.CLIENT)
+                        return null;
+                    else if (MyAssetType != AssetType.NONE)
+                        return (int)Ports.ToolServerPort;
+                    else
+                        return null;
                 default:
                     return null;
+            }
+        }
+        /// <summary>
+        /// Check if the server at the destination type passed in has been authenticated.
+        /// </summary>
+        /// <param name="Destination">The server you want to check.</param>
+        /// <returns>Whether it's authenticated.</returns>
+        public bool ServerAuthenticated(ConnectionType Destination)
+        {
+            lock (Servers)
+            {
+                if (Servers.ContainsKey(Destination) && Servers[Destination].Authenticated)
+                    return true;
+                else
+                    return false;
             }
         }
 

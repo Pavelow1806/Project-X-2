@@ -40,7 +40,7 @@ namespace Core
             if (!ready) Init();
             using (StreamWriter writer = new StreamWriter(fullPath, true))
             {
-                writer.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}");
+                writer.WriteLine($"1>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}");
             }
         }
         public static void Write(LogType Type, string Source, string Message)
@@ -48,7 +48,7 @@ namespace Core
             if (!ready) Init();
             using (StreamWriter writer = new StreamWriter(fullPath, true))
             {
-                writer.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - ({Source}) {Message}");
+                writer.WriteLine($"2>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - ({Source}) {Message}");
             }
         }
         public static void Write(Exception exception)
@@ -56,7 +56,7 @@ namespace Core
             if (!ready) Init();
             using (StreamWriter writer = new StreamWriter(fullPath, true))
             {
-                writer.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
+                writer.WriteLine($"3>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
             }
         }
         public static void Write(string Message, Exception exception)
@@ -64,7 +64,23 @@ namespace Core
             if (!ready) Init();
             using (StreamWriter writer = new StreamWriter(fullPath, true))
             {
-                writer.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}\n{exception.StackTrace}");
+                writer.WriteLine($"4>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}\n{exception.StackTrace}");
+            }
+        }
+        public static void Write(string Message, ConnectionType Destination, Exception exception)
+        {
+            if (!ready) Init();
+            using (StreamWriter writer = new StreamWriter(fullPath, true))
+            {
+                writer.WriteLine($"5>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}\n{exception.StackTrace}");
+            }
+        }
+        public static void Write(LogType Type, ConnectionType Destination, string Message)
+        {
+            if (!ready) Init();
+            using (StreamWriter writer = new StreamWriter(fullPath, true))
+            {
+                writer.WriteLine($"6>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}");
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,16 +22,14 @@ namespace Console_Application
     /// </summary>
     public partial class MainWindow : Window
     {
-        public string Contents
-        {
-            set { Console.Text = value; }
-        }
+        private readonly ServerModel _serverViewModel;
         public MainWindow()
         {
             InitializeComponent();
-            Contents = "Hi";
-            SocketManagement LoginServer = new SocketManagement("Login Server", 1991, true, ConnectionType.Outbound);
-            LoginServer.Connect("127.0.0.1", "Hello World!");
+            _serverViewModel = new ServerModel();
+            // The DataContext serves as the starting point of Binding Paths
+            DataContext = _serverViewModel;
+            _serverViewModel.
         }
     }
 }

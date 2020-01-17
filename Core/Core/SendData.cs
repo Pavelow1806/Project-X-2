@@ -47,9 +47,9 @@ namespace Core
                 Log.Write(ex);
             }
         }
-        public static void BuildBasePacket(int packetNumber, ref ByteBuffer.ByteBuffer buffer, ref List<object> Contents)
+        public static void BuildBasePacket(ConnectionType Source, int packetNumber, ref ByteBuffer.ByteBuffer buffer)
         {
-            buffer.WriteInteger((int)ConnectionType.LOGINSERVER);
+            buffer.WriteInteger((int)Source);
             buffer.WriteInteger(packetNumber);
         }
 
@@ -140,6 +140,7 @@ namespace Core
         {
             List<object> Contents = new List<object>();
             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
+            // TODO: Send the authentication packet out.
         }
     }
 }

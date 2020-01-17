@@ -5,11 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Console_Application"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <!--<Window.DataContext>-->
-        
-    <!--</Window.DataContext>/>-->
-    <Grid>
-        <TextBox Name="Console" HorizontalAlignment="Center" Height="419" TextWrapping="Wrap" Text="" VerticalAlignment="Center" Width="792" RenderTransformOrigin="0.5,0.5"/>
-    </Grid>
+        Title="MainWindow" Height="300" Width="500" MinHeight="300" MinWidth="500">
+    <Window.Resources>
+        <local:ColorToBrushConverter x:Key="ColorToBrushConverterKey"/>
+    </Window.Resources>
+    <TabControl ItemsSource="{Binding servers.Keys}" SelectedIndex="0">
+        <TabControl.ItemTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding Path=Name}"/>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+        <TabControl.ContentTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding Path=Key.Value.BMI}"/>
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+    </TabControl>
+
 </Window>

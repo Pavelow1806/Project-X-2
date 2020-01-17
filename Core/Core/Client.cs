@@ -36,6 +36,12 @@ namespace Core
 
         public override void Close()
         {
+            // Connection
+            Username = "";
+            SessionID = "";
+            ConnectedTime = default;
+            IP = "";
+            // Details
             Username = "";
             Email = "";
             LoggedIn = false;

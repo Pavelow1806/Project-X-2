@@ -15,13 +15,17 @@ namespace Core
             {
                 if (Destination != ConnectionType.NONE)
                 {
-                    if (Destination != ConnectionType.CLIENT)
+                    if (Destination != ConnectionType.CLIENT && Destination != ConnectionType.TOOL)
                     {
                         return AssetType.SERVER;
                     }
-                    else
+                    else if (Destination == ConnectionType.CLIENT)
                     {
                         return AssetType.CLIENT;
+                    }
+                    else
+                    {
+                        return AssetType.TOOL;
                     }
                 }
                 else
