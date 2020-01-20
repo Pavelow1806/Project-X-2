@@ -29,7 +29,11 @@ namespace Console_Application
             _serverViewModel = new ServerModel();
             // The DataContext serves as the starting point of Binding Paths
             DataContext = _serverViewModel;
-            _serverViewModel.
+            _serverViewModel.servers[0].State = "Black";
+        }
+        public void Something(object sender, EventArgs e)
+        {
+            Log.Write(LogType.Information, "Helloworld!");
         }
     }
 }

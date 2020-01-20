@@ -8,18 +8,80 @@
         Title="MainWindow" Height="300" Width="500" MinHeight="300" MinWidth="500">
     <Window.Resources>
         <local:ColorToBrushConverter x:Key="ColorToBrushConverterKey"/>
-    </Window.Resources>
-    <TabControl ItemsSource="{Binding servers.Keys}" SelectedIndex="0">
-        <TabControl.ItemTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding Path=Name}"/>
-            </DataTemplate>
-        </TabControl.ItemTemplate>
-        <TabControl.ContentTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding Path=Key.Value.BMI}"/>
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-    </TabControl>
+        <local:TypeToColorConverter x:Key="TypeToColorConverterKey"/>
 
+        <DataTemplate x:Key="ServerListTemplate">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Rectangle 
+                    Grid.Column="0" 
+                    VerticalAlignment="Center" 
+                    Width="20" 
+                    Height="20" 
+                    HorizontalAlignment="Right" 
+                    Margin="2" 
+                    Fill="{Binding State, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBlock 
+                    Grid.Column="1" 
+                    VerticalAlignment="Center" 
+                    Margin="10" 
+                    Text="{Binding Name}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="LogTemplate">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="37"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock 
+                    Grid.Column="0"
+                    Text="{Binding DateTimeStamp}"/>
+                <Rectangle Grid.Column="1"
+                    Fill="{Binding Type}"/>
+                <TextBlock Grid.Column="1"
+                    Text="{Binding Type, Converter={StaticResource TypeToColorConverterKey}}"
+                    Foreground="White"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="1"/>
+                <TextBlock Grid.Column="2"
+                    Text="{Binding Content}"/>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.Resources>
+            <local:ServerList x:Key="ServerListData"/>
+            <local:LogList x:Key="LogData"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <ListBox x:Name="ServerList"
+            Grid.Column="0" Width="AUTO"  
+            ItemsSource="{Binding Source={StaticResource ServerListData}}"  
+            ItemTemplate="{StaticResource ServerListTemplate}"  
+            IsSynchronizedWithCurrentItem="True"
+            BorderThickness="0"
+            SelectedItem="{Binding SelectedServer}"/>
+        <ListBox Grid.Column="1" Width="AUTO"
+            BorderThickness="0"
+            FontSize="10"
+            ItemsSource="{Binding SelectedServer}"
+            ItemTemplate="{StaticResource LogTemplate}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel VerticalAlignment="Bottom"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+    </Grid>
 </Window>
