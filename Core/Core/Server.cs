@@ -87,8 +87,8 @@ namespace Core
             }
 
             if (MaxConnectionAttempts == -1) RepeatConnections = true;
-            OutgoingConnectionThread.Name = $"OutgoingConnectionThread - {Type.ToString()}";
             OutgoingConnectionThread = new Thread(new ParameterizedThreadStart(Connect));
+            OutgoingConnectionThread.Name = $"OutgoingConnectionThread - {Type.ToString()}";
             OutgoingConnectionThread.Start(MaxConnectionAttempts);
         }
         private void Connect(object maxConnectionAttempts)
@@ -149,49 +149,64 @@ namespace Core
         }
         private void ConnectCallback(IAsyncResult result)
         {
-            if (Socket != null)
+            try
             {
-                Socket.EndConnect(result);
-                if (!Socket.Connected)
+                if (Socket != null)
                 {
-                    Connected = false;
-                    Close();
-                    return;
+                    Socket.EndConnect(result);
+                    if (!Socket.Connected)
+                    {
+                        Connected = false;
+                        Close();
+                        return;
+                    }
+                    else
+                    {
+                        Socket.NoDelay = true;
+                        Stream = Socket.GetStream();
+                        Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, OnReceive, null);
+                        ConnectedTime = DateTime.Now;
+                        Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
+                        Connected = true;
+                        SendData.Authenticate(this, Network.Instance.AuthenticationCode);
+                    }
                 }
-                else
-                {
-                    Socket.NoDelay = true;
-                    Stream = Socket.GetStream();
-                    Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, OnReceive, null);
-                    ConnectedTime = DateTime.Now;
-                    Log.Write(LogType.Connection, Type,"Connection to server successful!");
-                    Connected = true;
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write("The server failed to connect", Type, ex);
             }
         }
         void OnReceive(IAsyncResult result)
         {
-            if (Socket != null)
+            try
             {
-                if (Socket == null)
-                    return;
-
-                int readBytes = Stream.EndRead(result);
-                byte[] newBytes = null;
-                Array.Resize(ref newBytes, readBytes);
-                Buffer.BlockCopy(asyncBuff, 0, newBytes, 0, readBytes);
-
-                if (readBytes == 0)
+                if (Socket != null)
                 {
-                    Close();
-                    return;
+                    if (Socket == null)
+                        return;
+
+                    int readBytes = Stream.EndRead(result);
+                    byte[] newBytes = null;
+                    Array.Resize(ref newBytes, readBytes);
+                    Buffer.BlockCopy(asyncBuff, 0, newBytes, 0, readBytes);
+
+                    if (readBytes == 0)
+                    {
+                        Close();
+                        return;
+                    }
+
+                    ProcessData.Process(this, Index, newBytes);
+
+                    if (Socket == null)
+                        return;
+                    Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, OnReceive, null);
                 }
-
-                ProcessData.Process(this, Index, newBytes);
-
-                if (Socket == null)
-                    return;
-                Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, OnReceive, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
             }
         }
 
@@ -208,7 +223,7 @@ namespace Core
                 OnClose(this, new ServerConnectionEventArgs(this, IP, Type));
                 base.Close();
                 AuthenticationSuccessful = false;
-                OutgoingConnectionThread.Join();
+                if (OutgoingConnectionThread != null) OutgoingConnectionThread.Join();
             }
         }
 

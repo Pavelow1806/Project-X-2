@@ -10,23 +10,15 @@ using Core;
 
 namespace Console_Application
 {
-    public sealed class ServerModel : INotifyPropertyChanged
+    public sealed class ServerModel
     {
-        public ServerList servers = new ServerList();
-        public LogList SelectedServer { get; set; } = new LogList();
+        public ObservableCollection<Server> Servers { get; set; } = new ObservableCollection<Server>();
+        public ObservableCollection<LogEntry> SelectedServer { get; set; } = new ObservableCollection<LogEntry>();
 
         public ServerModel()
         {
-            servers.CollectionChanged += server_CollectionChanged;
+
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChange(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         private void server_CollectionChanged(object sender, EventArgs e)
         {
 

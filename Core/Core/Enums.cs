@@ -122,6 +122,16 @@ namespace Core
         Running,
         ShuttingDown
     }
+    public enum ToolProcessPacketNumbers
+    {
+        SendLogs,
+        AuthenticateServer
+    }
+    public enum ToolSendPacketNumbers
+    {
+        RequestLogs,
+        AuthenticateServer
+    }
     #endregion
 
     public static class EnumExtensions

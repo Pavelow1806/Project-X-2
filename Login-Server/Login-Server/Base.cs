@@ -11,10 +11,11 @@ namespace Login_Server
     class Base
     {
         private ProcessPacket ProcessPacket = new ProcessPacket();
-        private Network network = new Network();
+        private Network Network = new Network(ConnectionType.LOGINSERVER);
         public Base() 
         {
-            network.OnServerAuthenticated += OnServerAuthenticated;
+            Network.OnServerAuthenticated += OnServerAuthenticated;
+            Network.LaunchServer();
         }
         ~Base()
         {

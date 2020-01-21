@@ -136,11 +136,33 @@ namespace Core
         /// </summary>
         /// <param name="Server">This server (this)</param>
         /// <param name="Destination">The Destination server</param>
-        public static void Authenticate(Server Server, Server Destination)
+        public static void Authenticate(Server Destination, string AuthenticationCode)
         {
             List<object> Contents = new List<object>();
             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
-            // TODO: Send the authentication packet out.
+            buffer.WriteString(AuthenticationCode);
+            Server server = null;
+            string output = CheckDestination(Destination.Type, out server);
+            if (server == null)
+            {
+                Log.Write(LogType.Error, output);
+                return;
+            }
+            server.Stream.BeginWrite(buffer.ToArray(), 0, buffer.ToArray().Length, null, null);
+            Log.Write(LogType.TransmissionOut, $"Authentication packet sent to Server on connection type {server.Type.ToString()}");
+        }
+
+        public static void SendLogs(ConnectionType Source, ConnectionType Destination)
+        {
+            List<string> logs = new List<string>(Log.LogContent);
+            foreach (string log in logs)
+            {
+                List<object> Contents = new List<object>();
+                ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
+                buffer.WriteString(log);
+                Packet packet = new Packet((int)ToolProcessPacketNumbers.SendLogs, ToolProcessPacketNumbers.SendLogs.ToString(), -1, Destination, Source, buffer.ToArray());
+                Send(packet);
+            }
         }
     }
 }

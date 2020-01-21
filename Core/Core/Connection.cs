@@ -166,9 +166,9 @@ namespace Core
                 }
                 finally
                 {
-                    Log.Write(LogType.Information, $"Connection closed with IP {IP}, Index {Index.ToString()}, Username {Username}, Connected for {(DateTime.Now - ConnectedTime).ToString()}\nSession ID: {SessionID}");
-                    // Close the connection
-                    Close();
+                    //Log.Write(LogType.Information, $"Connection closed with IP {IP}, Index {Index.ToString()}, Username {Username}, Connected for {(DateTime.Now - ConnectedTime).ToString()}\nSession ID: {SessionID}");
+                    //// Close the connection
+                    //Close();
                 }
             }
         }

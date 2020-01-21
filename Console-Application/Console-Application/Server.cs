@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,34 @@ using System.Windows.Media;
 
 namespace Console_Application
 {
-    public sealed class Server
+    public sealed class Server : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public string ReStart { get; set; }
+        private string name { get; set; }
+        public string Name 
+        {
+            get { return name; } 
+            set 
+            {
+                if (name != value)
+                {
+                    name = value;
+                    OnPropertyChange("Name");
+                }
+            } 
+        }
+        private string reStart { get; set; }
+        public string ReStart 
+        {
+            get { return reStart; }
+            set 
+            {
+                if (reStart != value)
+                {
+                    reStart = value;
+                    OnPropertyChange("ReStart");
+                }
+            } 
+        }
         private string state { get; set; } = Colors.DarkRed.ToString();
         public string State 
         { 
@@ -25,7 +50,7 @@ namespace Console_Application
                 }
             }
         }
-        public LogList Logs { get; set; } = new LogList();
+        public ObservableCollection<LogEntry> Logs { get; set; } = new ObservableCollection<LogEntry>();
         public Server(string name, string reStart, Color state)
         {
             Name = name;

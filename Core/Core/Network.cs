@@ -111,7 +111,7 @@ namespace Core
             int? ClientPort = this.ClientPort;
             if (ClientPort != null)
             {
-                Port = (int)ServerPort;
+                Port = (int)ClientPort;
                 ClientListener = new Listener(IPAddress.Any, Port);
             }
             else
@@ -166,22 +166,26 @@ namespace Core
         /// <summary>
         /// Attempt to connect to the other servers in the cluster
         /// </summary>
-        public void Connect()
+        public List<ConnectionType> Connect()
         {
+            List<ConnectionType> result = new List<ConnectionType>();
             if (MyAssetType == AssetType.NONE)
             {
                 Log.Write(LogType.Error, $"The asset type I have is {MyAssetType.ToString()}, which is invalid");
-                return;
             }
             if (MyAssetType == AssetType.TOOL)
             {
                 ConnectToServer(ConnectionType.LOGINSERVER);
+                result.Add(ConnectionType.LOGINSERVER);
                 ConnectToServer(ConnectionType.GAMESERVER);
+                result.Add(ConnectionType.GAMESERVER);
                 ConnectToServer(ConnectionType.SYNCSERVER);
+                result.Add(ConnectionType.SYNCSERVER);
             }
             else if (MyAssetType == AssetType.CLIENT)
             {
                 ConnectToServer(ConnectionType.LOGINSERVER);
+                result.Add(ConnectionType.LOGINSERVER);
             }
             else
             {
@@ -190,30 +194,40 @@ namespace Core
                 {
                     case ConnectionType.NONE:
                         Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
-                        return;
+                        break;
                     case ConnectionType.CLIENT:
                         Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
-                        return;
+                        break;
                     case ConnectionType.GAMESERVER:
                         ConnectToServer(ConnectionType.LOGINSERVER);
+                        result.Add(ConnectionType.LOGINSERVER);
                         ConnectToServer(ConnectionType.SYNCSERVER);
+                        result.Add(ConnectionType.SYNCSERVER);
                         ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
-                        return;
+                        result.Add(ConnectionType.TOOL);
+                        break;
                     case ConnectionType.LOGINSERVER:
                         ConnectToServer(ConnectionType.GAMESERVER);
+                        result.Add(ConnectionType.GAMESERVER);
                         ConnectToServer(ConnectionType.SYNCSERVER);
+                        result.Add(ConnectionType.SYNCSERVER);
                         ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
-                        return;
+                        result.Add(ConnectionType.TOOL);
+                        break;
                     case ConnectionType.SYNCSERVER:
                         ConnectToServer(ConnectionType.LOGINSERVER);
+                        result.Add(ConnectionType.LOGINSERVER);
                         ConnectToServer(ConnectionType.GAMESERVER);
+                        result.Add(ConnectionType.GAMESERVER);
                         ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                        result.Add(ConnectionType.TOOL);
                         break;
                     default:
                         Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
-                        return;
+                        break;
                 }
             }
+            return (result.Count == 0 ? null : result);
         }
 
         private void ConnectToServer(ConnectionType Destination, int MaxConnectionAttempts = -1)

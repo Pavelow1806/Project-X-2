@@ -13,8 +13,12 @@ namespace Core
 {
     public class Log
     {
+        private static readonly object lockObj = new object();
+
         private static string LogFileName = string.Empty;
         private static string LogLocation = string.Empty;
+
+        public static List<string> LogContent = new List<string>();
 
         private static string fullPath = string.Empty;
         public static string FullPath { get { return fullPath; } }
@@ -38,49 +42,45 @@ namespace Core
         public static void Write(LogType Type, string Message)
         {
             if (!ready) Init();
-            using (StreamWriter writer = new StreamWriter(fullPath, true))
-            {
-                writer.WriteLine($"1>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}");
-            }
+            Write($"1>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}");
         }
         public static void Write(LogType Type, string Source, string Message)
         {
             if (!ready) Init();
-            using (StreamWriter writer = new StreamWriter(fullPath, true))
-            {
-                writer.WriteLine($"2>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - ({Source}) {Message}");
-            }
+            Write($"2>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - ({Source}) {Message}");
         }
         public static void Write(Exception exception)
         {
             if (!ready) Init();
-            using (StreamWriter writer = new StreamWriter(fullPath, true))
-            {
-                writer.WriteLine($"3>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
-            }
+            Write($"3>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
         }
         public static void Write(string Message, Exception exception)
         {
             if (!ready) Init();
-            using (StreamWriter writer = new StreamWriter(fullPath, true))
-            {
-                writer.WriteLine($"4>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}\n{exception.StackTrace}");
-            }
+            Write($"4>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}\n{exception.StackTrace}");
         }
         public static void Write(string Message, ConnectionType Destination, Exception exception)
         {
             if (!ready) Init();
-            using (StreamWriter writer = new StreamWriter(fullPath, true))
-            {
-                writer.WriteLine($"5>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}\n{exception.StackTrace}");
-            }
+            Write($"5>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}\n{exception.StackTrace}");
         }
         public static void Write(LogType Type, ConnectionType Destination, string Message)
         {
             if (!ready) Init();
-            using (StreamWriter writer = new StreamWriter(fullPath, true))
+            Write($"6>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}");
+        }
+        private static void Write(string Message)
+        {
+            lock (lockObj)
             {
-                writer.WriteLine($"6>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}");
+                using (StreamWriter writer = new StreamWriter(fullPath, true))
+                {
+                    writer.WriteLine(Message);
+                }
+            }
+            lock (LogContent)
+            {
+                LogContent.Add(Message);
             }
         }
     }
@@ -99,11 +99,11 @@ namespace Core
                 case LogType.Warning:
                     return "WARN ";
                 case LogType.Connection:
-                    return "CONN";
+                    return "CONN ";
                 case LogType.TransmissionOut:
-                    return "TRO ";
+                    return "TRANO";
                 case LogType.TransmissionIn:
-                    return "TRI ";
+                    return "TRANI";
                 default:
                     return "NONE";
             }

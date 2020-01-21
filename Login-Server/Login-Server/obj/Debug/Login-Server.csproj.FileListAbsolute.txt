@@ -8,4 +8,6 @@ C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csproj.CopyComplete
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.exe
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\ByteBuffer.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\ByteBuffer.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csprojAssemblyReference.cache

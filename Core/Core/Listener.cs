@@ -19,7 +19,15 @@ namespace Core
 
         public void StartAccept()
         {
-            BeginAcceptTcpClient(HandleAsyncConnection, this);
+            try
+            {
+                Start();
+                BeginAcceptTcpClient(HandleAsyncConnection, this);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
         public void HandleAsyncConnection(IAsyncResult result)
         {

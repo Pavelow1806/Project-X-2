@@ -22,18 +22,15 @@ namespace Console_Application
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ServerModel _serverViewModel;
+        private readonly ServerModel serverViewModel;
+        private readonly Monitor monitor;
         public MainWindow()
         {
             InitializeComponent();
-            _serverViewModel = new ServerModel();
+            serverViewModel = new ServerModel();
             // The DataContext serves as the starting point of Binding Paths
-            DataContext = _serverViewModel;
-            _serverViewModel.servers[0].State = "Black";
-        }
-        public void Something(object sender, EventArgs e)
-        {
-            Log.Write(LogType.Information, "Helloworld!");
+            DataContext = serverViewModel;
+            monitor = new Monitor(serverViewModel);
         }
     }
 }

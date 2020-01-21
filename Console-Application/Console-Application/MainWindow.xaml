@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="300" Width="500" MinHeight="300" MinWidth="500">
     <Window.Resources>
+        <local:ServerModel x:Key="Servers"/>
         <local:ColorToBrushConverter x:Key="ColorToBrushConverterKey"/>
         <local:TypeToColorConverter x:Key="TypeToColorConverterKey"/>
 
@@ -23,7 +24,7 @@
                     Height="20" 
                     HorizontalAlignment="Right" 
                     Margin="2" 
-                    Fill="{Binding State, UpdateSourceTrigger=PropertyChanged}"/>
+                    Fill="{Binding State}"/>
                 <TextBlock 
                     Grid.Column="1" 
                     VerticalAlignment="Center" 
@@ -56,10 +57,6 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <Grid.Resources>
-            <local:ServerList x:Key="ServerListData"/>
-            <local:LogList x:Key="LogData"/>
-        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
@@ -67,7 +64,7 @@
         
         <ListBox x:Name="ServerList"
             Grid.Column="0" Width="AUTO"  
-            ItemsSource="{Binding Source={StaticResource ServerListData}}"  
+            ItemsSource="{Binding Servers, UpdateSourceTrigger=PropertyChanged}"  
             ItemTemplate="{StaticResource ServerListTemplate}"  
             IsSynchronizedWithCurrentItem="True"
             BorderThickness="0"

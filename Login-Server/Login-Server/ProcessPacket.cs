@@ -11,7 +11,40 @@ namespace Login_Server
     {
         public static void Process(object sender, PacketEventArgs e)
         {
-            // TODO: Process the packet sent in
+            Log.Write(LogType.Information, $"Starting to process packet:\n{e.Packet.ToString()}");
+            switch (e.Packet.Source)
+            {
+                case ConnectionType.NONE:
+                    Log.Write(LogType.Error, $"The source type was invalid");
+                    return;
+                case ConnectionType.GAMESERVER:
+                    break;
+                case ConnectionType.CLIENT:
+                    break;
+                case ConnectionType.LOGINSERVER:
+                    Log.Write(LogType.Error, $"The source type was invalid");
+                    return;
+                case ConnectionType.SYNCSERVER:
+                    break;
+                case ConnectionType.TOOL:
+                    Process_ToolPacket(e.Packet);
+                    break;
+                default:
+                    Log.Write(LogType.Error, $"The source type was invalid");
+                    return;
+            }
+            Log.Write(LogType.Information, $"Finished processing packet:\n{e.Packet.ToString()}");
+        }
+        public static void Process_ToolPacket(Packet packet)
+        {
+            switch ((ToolSendPacketNumbers)packet.PacketNumber)
+            {
+                case ToolSendPacketNumbers.RequestLogs:
+                    SendData.SendLogs(packet.Destination, packet.Source);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
