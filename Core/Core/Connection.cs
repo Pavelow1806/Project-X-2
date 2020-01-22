@@ -95,6 +95,9 @@ namespace Core
 
                     Connected = false;
 
+                    // TODO: Raise event to tell the network that the connection was dropped, then 
+                    //           if it is a server, remove it from the connected/authenticated list.
+
                     // Rejoin main thread
                     DataThread.Join();
                 }
@@ -125,6 +128,7 @@ namespace Core
             catch (Exception ex)
             {
                 Log.Write($"An error occurred when beginning {nameof(Stream).ToString()}'s BeginRead function", ex);
+                Close();
             }
         }
         private void HandleAsyncConnection(IAsyncResult result)
@@ -132,7 +136,7 @@ namespace Core
             StartAccept();
             OnReceiveData(result);
         }
-        public void OnReceiveData(IAsyncResult result)
+        protected void OnReceiveData(IAsyncResult result)
         {
             lock (lockObj)
             {
@@ -155,7 +159,24 @@ namespace Core
                     // Process the packet
                     Packet packet = ProcessData.Process(this, Index, Bytes);
 
-                    OnPacketReceived(this, new PacketEventArgs(packet));
+                    if (this is Server && !Network.Instance.ServerAuthenticated(packet.Source))
+                    {
+                        Server s = (Server)this;
+                        if (!s.Authenticated)
+                        {
+                            ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(new List<object>());
+                            buffer.WriteBytes(packet.Data);
+                            ProcessData.ReadHeader(ref buffer);
+                            if (buffer.ReadString() == Network.Instance.AuthenticationCode)
+                            {
+                                s.Authenticate(packet.Source);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        OnPacketReceived(this, new PacketEventArgs(packet));
+                    }
 
                     Stream.BeginRead(ReadBuff, 0, Socket.ReceiveBufferSize, OnReceiveData, null);
                 }

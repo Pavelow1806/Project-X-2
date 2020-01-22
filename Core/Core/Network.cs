@@ -16,7 +16,7 @@ namespace Core
         public static bool Running = false;
 
         #region Connections
-        public string AuthenticationCode = "";
+        public string AuthenticationCode = "123";
         public Client[] Clients = new Client[Constants.MaxConnections];
 
         public List<Server> ServerQueue = new List<Server>();
@@ -24,7 +24,7 @@ namespace Core
         #endregion
 
         public readonly AssetType MyAssetType = AssetType.NONE;
-        private readonly ConnectionType MyConnectionType = ConnectionType.NONE;
+        public readonly ConnectionType MyConnectionType = ConnectionType.NONE;
         private int? ClientPort
         {
             get
@@ -78,6 +78,7 @@ namespace Core
 
         #region Events
         public EventHandler<ServerConnectionEventArgs> OnServerAuthenticated;
+        public EventHandler<PacketEventArgs> OnPacketReceived;
         #endregion
 
         public Network(ConnectionType type, string ServerClusterIP = Constants.ClusterLocalIP) 
@@ -326,6 +327,11 @@ namespace Core
             if (server == null) return;
             server.OnAuthenticate += Authentication_AuthenticatedEvent;
             server.OnClose += Server_OnClose;
+            server.OnPacketReceived += PacketReceived;
+        }
+        private void PacketReceived(object sender, PacketEventArgs e)
+        {
+            OnPacketReceived(sender, e);
         }
         private void Authentication_AuthenticatedEvent(object sender, ServerConnectionEventArgs e)
         {

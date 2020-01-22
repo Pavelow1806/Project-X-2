@@ -10,11 +10,12 @@ namespace Core
 {
     public class Server : Connection
     {
-        private readonly System.Timers.Timer AuthenticateTimer = new System.Timers.Timer();
+        private System.Timers.Timer AuthenticateTimer;
         public event EventHandler<ServerConnectionEventArgs> OnAuthenticate;
         public event EventHandler<ServerConnectionEventArgs> OnClose;
         private bool AuthenticationSuccessful = false;
         private bool RepeatConnections = false;
+        private int MaxConnectionAttempts = -1;
 
         public bool Authenticated { get; } = false;
 
@@ -49,7 +50,7 @@ namespace Core
 
             Log.Write(LogType.Information, "Waiting for server to authenticate..");
 
-            AuthenticateTimer.Interval = Constants.MillisecondsToAuthenticateBeforeDisconnect;
+            AuthenticateTimer = new System.Timers.Timer(Constants.MillisecondsToAuthenticateBeforeDisconnect);
             AuthenticateTimer.Elapsed += OnAuthenticationExpiry;
             AuthenticateTimer.AutoReset = false;
             AuthenticateTimer.Enabled = true;
@@ -94,7 +95,7 @@ namespace Core
         private void Connect(object maxConnectionAttempts)
         {
             if (maxConnectionAttempts.GetType() != typeof(int)) return;
-            int MaxConnectionAttempts = (int)maxConnectionAttempts;
+            MaxConnectionAttempts = (int)maxConnectionAttempts;
             int ConnectionAttemptCount = 0;
             while ((!Connected && (MaxConnectionAttempts == -1 || ConnectionAttemptCount < MaxConnectionAttempts)) || !Authenticated)
             {
@@ -104,6 +105,10 @@ namespace Core
 
                 Connect();
 
+                if (Connected)
+                {
+                    break;
+                }
                 if (!Connected)
                 {
 
@@ -115,6 +120,7 @@ namespace Core
                     Thread.Sleep(Constants.MillisecondsBetweenAttemptingConnect);
                 }
             }
+            OutgoingConnectionThread.Join();
         }
         private void Connect()
         {
@@ -164,49 +170,17 @@ namespace Core
                     {
                         Socket.NoDelay = true;
                         Stream = Socket.GetStream();
-                        Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, OnReceive, null);
+                        Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, base.OnReceiveData, null);
                         ConnectedTime = DateTime.Now;
                         Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
                         Connected = true;
-                        SendData.Authenticate(this, Network.Instance.AuthenticationCode);
+                        SendData.Authenticate(Network.Instance.MyConnectionType, Type, Network.Instance.AuthenticationCode);
                     }
                 }
             }
             catch (Exception ex)
             {
                 Log.Write("The server failed to connect", Type, ex);
-            }
-        }
-        void OnReceive(IAsyncResult result)
-        {
-            try
-            {
-                if (Socket != null)
-                {
-                    if (Socket == null)
-                        return;
-
-                    int readBytes = Stream.EndRead(result);
-                    byte[] newBytes = null;
-                    Array.Resize(ref newBytes, readBytes);
-                    Buffer.BlockCopy(asyncBuff, 0, newBytes, 0, readBytes);
-
-                    if (readBytes == 0)
-                    {
-                        Close();
-                        return;
-                    }
-
-                    ProcessData.Process(this, Index, newBytes);
-
-                    if (Socket == null)
-                        return;
-                    Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, OnReceive, null);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Write(ex);
             }
         }
 
@@ -216,7 +190,7 @@ namespace Core
             {
                 Socket = null;
                 Connected = false;
-                Connect();
+                Connect(MaxConnectionAttempts);
             }
             else
             {

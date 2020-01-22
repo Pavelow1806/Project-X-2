@@ -31,5 +31,10 @@ namespace Core
             }
             return null;
         }
+        public static void ReadHeader(ref ByteBuffer.ByteBuffer buffer)
+        {
+            buffer.ReadInteger();
+            buffer.ReadInteger();
+        }
     }
 }

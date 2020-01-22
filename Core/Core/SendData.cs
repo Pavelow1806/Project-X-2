@@ -119,11 +119,6 @@ namespace Core
                 server = null;
                 return $"The Server with connection type {connectionType.ToString()} had a Network Stream that was null.";
             }
-            else if (s.Stream.CanWrite)
-            {
-                server = null;
-                return $"The Server with connection type {connectionType.ToString()} is not able to write to the Network Stream.";
-            }
             else
             {
                 server = s;
@@ -136,13 +131,14 @@ namespace Core
         /// </summary>
         /// <param name="Server">This server (this)</param>
         /// <param name="Destination">The Destination server</param>
-        public static void Authenticate(Server Destination, string AuthenticationCode)
+        public static void Authenticate(ConnectionType Source, ConnectionType Destination, string AuthenticationCode)
         {
             List<object> Contents = new List<object>();
             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
+            BuildBasePacket(Source, -1, ref buffer);
             buffer.WriteString(AuthenticationCode);
             Server server = null;
-            string output = CheckDestination(Destination.Type, out server);
+            string output = CheckDestination(Destination, out server);
             if (server == null)
             {
                 Log.Write(LogType.Error, output);

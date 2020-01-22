@@ -1,0 +1,34 @@
+﻿<Window x:Class="Log_Watcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Log_Watcher"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <local:LogViewModel x:Key="LogViewModelKey"/>
+
+        <DataTemplate x:Key="LogItemTemplate">
+            <TextBlock 
+                Text="{Binding Line}"
+                FontSize="9"/>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <ListBox 
+            x:Name="ServerLogListBox"
+            Grid.Column="0" 
+            ItemsSource="{Binding ServerLog, UpdateSourceTrigger=PropertyChanged}"
+            ItemTemplate="{StaticResource LogItemTemplate}"/>
+        <ListBox 
+            x:Name="ConsoleLogListBox"
+            Grid.Column="1" 
+            ItemsSource="{Binding ConsoleLog, UpdateSourceTrigger=PropertyChanged}"
+            ItemTemplate="{StaticResource LogItemTemplate}"/>
+    </Grid>
+</Window>
