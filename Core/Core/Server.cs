@@ -17,7 +17,7 @@ namespace Core
         private bool RepeatConnections = false;
         private int MaxConnectionAttempts = -1;
 
-        public bool Authenticated { get; } = false;
+        public bool Authenticated { get { return AuthenticationSuccessful; } }
 
         /// <summary>
         /// Constructor for inbound server connections.
@@ -62,7 +62,7 @@ namespace Core
         /// <param name="MaxConnectionAttempts">How many times the connection to the server should retry, leave blank to keep trying.</param>
         public void StartConnecting(int MaxConnectionAttempts = -1)
         {
-            if (Type == ConnectionType.NONE || Type == ConnectionType.CLIENT)
+            if (Type == ConnectionType.UNKNOWN || Type == ConnectionType.CLIENT)
             {
                 Log.Write(LogType.Error, $"The type of the desintation server object is {Type.ToString()}, which is invalid");
                 return;
@@ -145,7 +145,7 @@ namespace Core
                     NoDelay = false
                 };
                 Socket.Client.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, 1);
-                Array.Resize(ref asyncBuff, Constants.BufferSize * 2);
+                Array.Resize(ref ReadBuff, Constants.BufferSize * 2);
                 Socket.BeginConnect(IP, Port, new AsyncCallback(ConnectCallback), Socket);
             }
             catch (Exception ex)
@@ -170,7 +170,7 @@ namespace Core
                     {
                         Socket.NoDelay = true;
                         Stream = Socket.GetStream();
-                        Stream.BeginRead(asyncBuff, 0, Constants.BufferSize * 2, base.OnReceiveData, null);
+                        Stream.BeginRead(ReadBuff, 0, Constants.BufferSize * 2, base.OnReceiveData, null);
                         ConnectedTime = DateTime.Now;
                         Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
                         Connected = true;
@@ -188,12 +188,14 @@ namespace Core
         {
             if (RepeatConnections) 
             {
+                Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()} was closed, attempting to reconnect..");
                 Socket = null;
                 Connected = false;
                 Connect(MaxConnectionAttempts);
             }
             else
             {
+                Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()} was closed");
                 OnClose(this, new ServerConnectionEventArgs(this, IP, Type));
                 base.Close();
                 AuthenticationSuccessful = false;
@@ -212,7 +214,7 @@ namespace Core
         public void Authenticate(ConnectionType type)
         {
             AuthenticationSuccessful = true;
-            AuthenticateTimer.Enabled = false;
+            if (AuthenticateTimer != null) AuthenticateTimer.Enabled = false;
             OnAuthenticate(this, new ServerConnectionEventArgs(this, IP, type));
         }
     }

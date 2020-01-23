@@ -24,7 +24,7 @@ namespace Login_Server
         public void OnServerAuthenticated(object sender, ServerConnectionEventArgs e)
         {
             // Once the server has authenticated, register the process event to begin processing the packets
-            e.Server.OnPacketReceived += ProcessPacket.Process;
+            Network.OnPacketReceived += ProcessPacket.Process;
         }
     }
 }

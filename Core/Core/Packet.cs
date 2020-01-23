@@ -8,12 +8,12 @@ namespace Core
 {
     public class Packet
     {
-        public ConnectionType Destination = ConnectionType.NONE;
+        public ConnectionType Destination = ConnectionType.UNKNOWN;
         public AssetType DestinationType
         {
             get
             {
-                if (Destination != ConnectionType.NONE)
+                if (Destination != ConnectionType.UNKNOWN)
                 {
                     if (Destination != ConnectionType.CLIENT && Destination != ConnectionType.TOOL)
                     {
@@ -34,7 +34,7 @@ namespace Core
                 }
             }
         }
-        public ConnectionType Source = ConnectionType.NONE;
+        public ConnectionType Source = ConnectionType.UNKNOWN;
         public int Index;
 
         public int PacketNumber;

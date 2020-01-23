@@ -40,7 +40,8 @@ namespace Core
     }
     public enum ConnectionType
     {
-        NONE,
+        [Description("Unknown")]
+        UNKNOWN,
         [Description("Game Server")]
         GAMESERVER,
         [Description("Client")]

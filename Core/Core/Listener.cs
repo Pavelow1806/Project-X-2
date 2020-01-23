@@ -74,7 +74,7 @@ namespace Core
                     }
                     else if (Type == AssetType.SERVER)
                     {
-                        Server server = new Server(ConnectionType.NONE, -1);
+                        Server server = new Server(ConnectionType.UNKNOWN, -1);
 
                         try
                         {

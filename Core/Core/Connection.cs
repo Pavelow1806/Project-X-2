@@ -31,12 +31,11 @@ namespace Core
         #endregion
 
         #region Network
-        private byte[] ReadBuff;
+        protected byte[] ReadBuff;
         public TcpClient Socket;
         public NetworkStream Stream;
         public StreamReader Reader = null;
         public StreamWriter Writer = null;
-        public byte[] asyncBuff = null;
         #endregion
 
         #region Events
@@ -71,7 +70,7 @@ namespace Core
                 {
                     // Network
                     ReadBuff = null;
-                    asyncBuff = null;
+                    ReadBuff = null;
                     if (Socket != null)
                     {
                         Socket.Close();
@@ -94,9 +93,6 @@ namespace Core
                     }
 
                     Connected = false;
-
-                    // TODO: Raise event to tell the network that the connection was dropped, then 
-                    //           if it is a server, remove it from the connected/authenticated list.
 
                     // Rejoin main thread
                     DataThread.Join();
@@ -152,7 +148,15 @@ namespace Core
                     Buffer.BlockCopy(ReadBuff, 0, Bytes, 0, ReadBytes);
                     if (ReadBytes <= 0)
                     {
-                        Close();
+                        if (this is Server)
+                        {
+                            Server s = (Server)this;
+                            s.Close();
+                        }
+                        else
+                        {
+                            Close();
+                        }
                         return;
                     }
 
@@ -169,7 +173,10 @@ namespace Core
                             ProcessData.ReadHeader(ref buffer);
                             if (buffer.ReadString() == Network.Instance.AuthenticationCode)
                             {
+                                // Add to list of authenticated servers
                                 s.Authenticate(packet.Source);
+                                // Confirm authentication with reply
+                                SendData.Authenticate(Network.Instance.MyConnectionType, packet.Source, Network.Instance.AuthenticationCode);
                             }
                         }
                     }
@@ -184,12 +191,18 @@ namespace Core
                 {
                     // Output error message
                     Log.Write("An error occurred when receiving data", ex);
-                }
-                finally
-                {
-                    //Log.Write(LogType.Information, $"Connection closed with IP {IP}, Index {Index.ToString()}, Username {Username}, Connected for {(DateTime.Now - ConnectedTime).ToString()}\nSession ID: {SessionID}");
-                    //// Close the connection
-                    //Close();
+                    if (Socket == null || !Socket.Connected)
+                    {
+                        if (this is Server)
+                        {
+                            Server s = (Server)this;
+                            s.Close();
+                        }
+                        else
+                        {
+                            Close();
+                        }
+                    }
                 }
             }
         }

@@ -10,8 +10,10 @@ namespace Core
 {
     public class LogReader
     {
-        private string LogFolder = "";
-        private string LogFileName = "";
+        private string logFolder = "";
+        public string LogFolder { get { return logFolder; } }
+        private string logFileName = "";
+        public string LogFileName { get { return logFileName; } }
         private FileSystemWatcher fsw = new FileSystemWatcher();
         public event FileSystemEventHandler Changed
         {
@@ -46,8 +48,8 @@ namespace Core
 
         public LogReader(string logFolder = "", string logFileName = "")
         {
-            LogFolder = logFolder;
-            LogFileName = logFileName;
+            this.logFolder = logFolder;
+            this.logFileName = logFileName;
         }
         public void OpenFile()
         {
@@ -61,18 +63,18 @@ namespace Core
             fd.ShowDialog();
             if (fd.ShowDialog() == DialogResult.OK)
             {
-                LogFolder = Path.GetDirectoryName(fd.FileName);
-                LogFileName = Path.GetFileName(fd.FileName);
+                logFolder = Path.GetDirectoryName(fd.FileName);
+                logFileName = Path.GetFileName(fd.FileName);
             }
         }
         public void Start()
         {
-            if (!Directory.Exists(LogFolder))
+            if (!Directory.Exists(logFolder))
             {
-                Log.Write(LogType.Error, $"The LogReader directory of {LogFolder} didn't exist.");
+                Log.Write(LogType.Error, $"The LogReader directory of {logFolder} didn't exist.");
                 return;
             }
-            string fullPath = Path.Combine(LogFolder, LogFileName);
+            string fullPath = Path.Combine(logFolder, logFileName);
             if (!File.Exists(fullPath))
             {
                 Log.Write(LogType.Error, $"The LogReader file of {fullPath} didn't exist.");
@@ -83,8 +85,8 @@ namespace Core
                 Log.Write(LogType.Error, "There were no subscribers to the file changed event.");
                 return;
             }
-            fsw.Path = LogFolder;
-            fsw.Filter = LogFileName;
+            fsw.Path = logFolder;
+            fsw.Filter = logFileName;
             fsw.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.LastAccess;
             fsw.EnableRaisingEvents = !Pause;
         }

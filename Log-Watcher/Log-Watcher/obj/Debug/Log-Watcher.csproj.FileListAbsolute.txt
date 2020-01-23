@@ -17,3 +17,4 @@ C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Lo
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.csproj.CopyComplete
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.exe
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.csprojAssemblyReference.cache

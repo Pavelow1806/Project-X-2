@@ -35,9 +35,16 @@ namespace Log_Watcher
             InitializeComponent();
             ServerLog.Changed += OnServerChanged;
             ConsoleLog.Changed += OnConsoleChanged;
+
+            ServerLogPP.MouseLeftButtonUp += ServerLogPP_OnClick;
+            AllLogPP.MouseLeftButtonUp += AllPP_OnClick;
+            ConsoleLogPP.MouseLeftButtonUp += ConsoleLogPP_OnClick;
+
             DataContext = lvm;
             ServerLog.Start();
+            OnServerChanged(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, ServerLog.LogFolder, ServerLog.LogFileName));
             ConsoleLog.Start();
+            OnConsoleChanged(this, new FileSystemEventArgs(WatcherChangeTypes.Created, ConsoleLog.LogFolder, ConsoleLog.LogFileName));
         }
         private void OnServerChanged(object source, FileSystemEventArgs e)
         {
@@ -75,6 +82,63 @@ namespace Log_Watcher
             {
                 e.LogView.RemoveAt(0);
             }
+        }
+        private void ServerLogPP_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ServerLog.Pause)
+            {
+                ServerLog.Pause = false;
+                lvm.ServerLogPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
+                OnServerChanged(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, ServerLog.LogFolder, ServerLog.LogFileName));
+            }
+            else
+            {
+                ServerLog.Pause = true;
+                lvm.ServerLogPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+            }
+            if (ServerLog.Pause && ConsoleLog.Pause)
+                lvm.AllPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+            else
+                lvm.AllPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
+        }
+        private void AllPP_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            if (!ServerLog.Pause || !ConsoleLog.Pause)
+            {
+                ServerLog.Pause = true;
+                lvm.ServerLogPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+                ConsoleLog.Pause = true;
+                lvm.ConsoleLogPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+                lvm.AllPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+            }
+            else
+            {
+                ServerLog.Pause = false;
+                lvm.ServerLogPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
+                OnServerChanged(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, ServerLog.LogFolder, ServerLog.LogFileName));
+                ConsoleLog.Pause = false;
+                lvm.ConsoleLogPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
+                OnConsoleChanged(this, new FileSystemEventArgs(WatcherChangeTypes.Created, ConsoleLog.LogFolder, ConsoleLog.LogFileName));
+                lvm.AllPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
+            }
+        }
+        private void ConsoleLogPP_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            if (ConsoleLog.Pause)
+            {
+                ConsoleLog.Pause = false;
+                lvm.ConsoleLogPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
+                OnConsoleChanged(this, new FileSystemEventArgs(WatcherChangeTypes.Created, ConsoleLog.LogFolder, ConsoleLog.LogFileName));
+            }
+            else
+            {
+                ConsoleLog.Pause = true;
+                lvm.ConsoleLogPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+            }
+            if (ServerLog.Pause && ConsoleLog.Pause)
+                lvm.AllPPImage = Properties.Resources.PlayButtonIcon.ImageSource();
+            else
+                lvm.AllPPImage = Properties.Resources.PauseButtonIcon.ImageSource();
         }
     }
 }

@@ -16,19 +16,40 @@
         </DataTemplate>
     </Window.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <ListBox 
-            x:Name="ServerLogListBox"
-            Grid.Column="0" 
-            ItemsSource="{Binding ServerLog, UpdateSourceTrigger=PropertyChanged}"
-            ItemTemplate="{StaticResource LogItemTemplate}"/>
-        <ListBox 
-            x:Name="ConsoleLogListBox"
-            Grid.Column="1" 
-            ItemsSource="{Binding ConsoleLog, UpdateSourceTrigger=PropertyChanged}"
-            ItemTemplate="{StaticResource LogItemTemplate}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <ListBox 
+                x:Name="ServerLogListBox"
+                Grid.Column="0" 
+                ItemsSource="{Binding ServerLog, UpdateSourceTrigger=PropertyChanged}"
+                ItemTemplate="{StaticResource LogItemTemplate}"/>
+            <ListBox 
+                x:Name="ConsoleLogListBox"
+                Grid.Column="1" 
+                ItemsSource="{Binding ConsoleLog, UpdateSourceTrigger=PropertyChanged}"
+                ItemTemplate="{StaticResource LogItemTemplate}"/>
+        </Grid>
+        <Grid x:Name="Overlay" Panel.ZIndex="1000"
+                Width="80" Height="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="ServerLogPP" Source="{Binding ServerLogPPImage, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+
+            <Image Grid.Column="1" x:Name="AllLogPP" Source="{Binding AllPPImage, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Grid Grid.Column="2" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image x:Name="ConsoleLogPP" Source="{Binding ConsoleLogPPImage, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

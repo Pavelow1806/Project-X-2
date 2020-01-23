@@ -24,14 +24,14 @@ namespace Core
         #endregion
 
         public readonly AssetType MyAssetType = AssetType.NONE;
-        public readonly ConnectionType MyConnectionType = ConnectionType.NONE;
+        public readonly ConnectionType MyConnectionType = ConnectionType.UNKNOWN;
         private int? ClientPort
         {
             get
             {
                 switch (MyConnectionType)
                 {
-                    case ConnectionType.NONE:
+                    case ConnectionType.UNKNOWN:
                         return null;
                     case ConnectionType.GAMESERVER:
                         return (int)Ports.GameClientPort;
@@ -52,7 +52,7 @@ namespace Core
             {
                 switch (MyConnectionType)
                 {
-                    case ConnectionType.NONE:
+                    case ConnectionType.UNKNOWN:
                         return null;
                     case ConnectionType.GAMESERVER:
                         return (int)Ports.GameServerPort;
@@ -88,7 +88,7 @@ namespace Core
             MyConnectionType = type;
             if (type != ConnectionType.CLIENT && type != ConnectionType.TOOL)
                 MyAssetType = AssetType.SERVER;
-            else if (type != ConnectionType.NONE)
+            else if (type != ConnectionType.UNKNOWN)
                 if (type == ConnectionType.CLIENT)
                     MyAssetType = AssetType.CLIENT;
                 else
@@ -193,7 +193,7 @@ namespace Core
                 // If this is a server, connect to the other servers in the cluster
                 switch (MyConnectionType)
                 {
-                    case ConnectionType.NONE:
+                    case ConnectionType.UNKNOWN:
                         Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
                         break;
                     case ConnectionType.CLIENT:
@@ -264,7 +264,7 @@ namespace Core
         {
             switch (Destination)
             {
-                case ConnectionType.NONE:
+                case ConnectionType.UNKNOWN:
                     return null;
                 case ConnectionType.GAMESERVER:
                     if (MyAssetType == AssetType.CLIENT)
