@@ -37,7 +37,21 @@ namespace Log_Watcher
             }
         }
 
-        private bool logNotSaved { get; set; }
+        private ImageSource saveImage;
+        public ImageSource SaveImage
+        {
+            get { return saveImage; }
+            set
+            {
+                if (saveImage != value)
+                {
+                    saveImage = value;
+                    OnPropertyChanged("SaveImage");
+                }
+            }
+        }
+
+        private bool logNotSaved { get; set; } = true;
         public bool LogNotSaved
         {
             get { return logNotSaved; }

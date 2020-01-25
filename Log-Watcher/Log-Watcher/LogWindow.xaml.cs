@@ -1,6 +1,7 @@
 ﻿using Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,14 +26,26 @@ namespace Log_Watcher
         LogViewModel LogViewModel = new LogViewModel();
         LogReader LogReader;
         WindowsFormsSynchronizationContext UIThread = new WindowsFormsSynchronizationContext();
-        public LogWindow(string LogFolder, string LogFileName, MainWindow Parent)
+        MainWindowViewModel MWVM;
+        string FullPath = "";
+
+        public EventHandler CloseWindow;
+        public LogWindow(string LogFolder, string LogFileName, MainWindow Parent, string Alias = "", bool LogNotSaved = true)
         {
             InitializeComponent();
+            Title = $"{LogFileName}{(!string.IsNullOrEmpty(Alias) ? $" [{Alias}]" : "")}";
+            LogViewModel.LogNotSaved = LogNotSaved;
+            MWVM = (MainWindowViewModel)Parent.DataContext;
             DockManager = Parent.dockManager;
             DataContext = LogViewModel;
+            LogPP.MouseLeftButtonUp += PPImage_OnClick;
+            LogSave.MouseLeftButtonUp += SaveIcon_OnClick;
             LogReader = new LogReader(LogFolder, LogFileName);
-            LogReader.Start();
+            FullPath = System.IO.Path.Combine(LogFolder, LogFileName);
             LogReader.Changed += OnChange;
+            LogReader.Start();
+            // Manual refresh
+            OnChange(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, LogFolder, LogFileName));
         }
 
         private void OnChange(object source, FileSystemEventArgs e)
@@ -86,6 +99,47 @@ namespace Log_Watcher
                 LogReader.Pause = true;
                 LogViewModel.PPImage = Properties.Resources.PlayButtonIcon.ImageSource();
             }
+        }
+
+        private void SaveIcon_OnClick(object sender, MouseButtonEventArgs e)
+        {
+            if (MWVM == null)
+                return;
+
+            LogReader.Pause = true;
+
+            MWVM.Path = FullPath;
+            MWVM.WindowContextMenu = MainWindowContent.Save;
+            MWVM.PropertyChanged += LogSavedReturn;
+            MWVM.Visible = true;
+        }
+        private void LogSavedReturn(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != "Visible")
+                return;
+
+            LogReader.Pause = false;
+
+            lock (MWVM.SavedLogs)
+            {
+                if (!MWVM.SavedLogs.Any(x => x.Path == System.IO.Path.Combine(LogReader.LogFolder, LogReader.LogFileName)))
+                    LogViewModel.LogNotSaved = true;
+                else
+                    LogViewModel.LogNotSaved = false;
+            }
+            MWVM.PropertyChanged -= LogSavedReturn;
+        }
+
+        private void DockableContent_Closed(object sender, EventArgs e)
+        {
+            LogReader.Pause = true;
+            LogReader = null;
+
+            LogPP.MouseLeftButtonUp -= PPImage_OnClick;
+            LogSave.MouseLeftButtonUp -= SaveIcon_OnClick;
+            MWVM.PropertyChanged -= LogSavedReturn;
+
+            CloseWindow?.Invoke(this, new EventArgs());
         }
     }
 }

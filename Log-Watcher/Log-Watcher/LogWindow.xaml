@@ -7,9 +7,8 @@
         xmlns:local="clr-namespace:Log_Watcher"
         xmlns:docking="clr-namespace:DockingLibrary;assembly=DockingLibrary"
         mc:Ignorable="d"
-        Title="LogWindow" Height="450" Width="800">
+        Title="LogWindow" Height="450" Width="800" Closed="DockableContent_Closed">
     <Window.Resources>
-        <local:LogViewModel x:Key="LogViewModelKey"/>
 
         <DataTemplate x:Key="LogItemTemplate">
             <TextBlock 
@@ -17,6 +16,7 @@
                 Foreground="White"
                 FontSize="9"/>
         </DataTemplate>
+        
     </Window.Resources>
     <Grid>
         <ListBox 
@@ -25,13 +25,25 @@
             Grid.Column="0" 
             ItemsSource="{Binding Log, UpdateSourceTrigger=PropertyChanged}"
             ItemTemplate="{StaticResource LogItemTemplate}"/>
-        <Image 
-            Margin="2.5" 
+        <Grid
+            Margin="2.5"
             VerticalAlignment="Top" 
             HorizontalAlignment="Left" 
             Height="25" 
-            Width="25" 
-            x:Name="LogPP" 
-            Source="{Binding PPImage, UpdateSourceTrigger=PropertyChanged}"/>
+            Width="55" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Image 
+                Grid.Column="0"
+                x:Name="LogPP" 
+                Source="{Binding PPImage, UpdateSourceTrigger=PropertyChanged}"/>
+            <Image 
+                Grid.Column="1"
+                x:Name="LogSave" 
+                Source="{Binding SaveImage}"
+                Visibility="{Binding LogNotSaved, Converter={StaticResource BoolToVisibility}}"/>
+        </Grid>
     </Grid>
 </docking:DockableContent>

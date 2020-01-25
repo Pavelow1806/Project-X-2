@@ -42,32 +42,32 @@ namespace Core
         public static void Write(LogType Type, string Message)
         {
             if (!ready) Init();
-            Write($"1>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}");
+            Write($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}");
         }
         public static void Write(LogType Type, string Source, string Message)
         {
             if (!ready) Init();
-            Write($"2>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - ({Source}) {Message}");
+            Write($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - ({Source}) {Message}");
         }
         public static void Write(Exception exception)
         {
             if (!ready) Init();
-            Write($"3>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
+            Write($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {exception.Source} caused an error: {exception.StackTrace}");
         }
         public static void Write(string Message, Exception exception)
         {
             if (!ready) Init();
-            Write($"4>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}\n{exception.StackTrace}");
+            Write($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - {Message}\n{exception.StackTrace}");
         }
         public static void Write(string Message, ConnectionType Destination, Exception exception)
         {
             if (!ready) Init();
-            Write($"5>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}\n{exception.StackTrace}");
+            Write($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {LogType.Error.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}\n{exception.StackTrace}");
         }
         public static void Write(LogType Type, ConnectionType Destination, string Message)
         {
             if (!ready) Init();
-            Write($"6>{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}");
+            Write($"{DateTime.Now.ToString("yyyy-MM-dd H:mm:ss.fff")} {Type.ToFriendlyString()} [{Thread.GetDomainID().ToString("00")}][{Process.GetCurrentProcess().Id.ToString()}] - [{Destination.ToString()}] {Message}");
         }
         private static void Write(string Message)
         {

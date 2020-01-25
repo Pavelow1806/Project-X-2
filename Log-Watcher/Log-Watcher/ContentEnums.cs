@@ -9,7 +9,6 @@ namespace Log_Watcher
     public enum MainWindowContent
     {
         Open,
-        OpenSave,
         Save,
         Load
     }

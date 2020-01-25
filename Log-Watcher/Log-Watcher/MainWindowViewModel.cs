@@ -19,6 +19,8 @@ namespace Log_Watcher
                 if (visible != value)
                 {
                     visible = value;
+                    if (!value)
+                        WindowContextMenu = MainWindowContent.Open;
                     OnPropertyChanged("Visible");
                 }
             }
@@ -53,6 +55,34 @@ namespace Log_Watcher
         }
         public SavedLog SelectedLog { get; set; }
         public bool SaveLog { get; set; } = false;
+
+        private string alias = "";
+        public string Alias
+        {
+            get { return alias; }
+            set
+            {
+                if (alias != value)
+                {
+                    alias = value;
+                    OnPropertyChanged("Alias");
+                }
+            }
+        }
+
+        private string path = "";
+        public string Path 
+        { 
+            get { return path; } 
+            set
+            {
+                if (path != value)
+                {
+                    path = value;
+                    OnPropertyChanged("Path");
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string value)

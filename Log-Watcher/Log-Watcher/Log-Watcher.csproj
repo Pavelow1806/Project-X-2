@@ -134,5 +134,8 @@
   <ItemGroup>
     <Resource Include="PlayButtonIcon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SaveButtonIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

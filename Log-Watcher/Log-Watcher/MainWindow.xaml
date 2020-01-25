@@ -9,39 +9,17 @@
         Title="MainWindow" MinHeight="450" MinWidth="800"
         Height="450" Width="800" Loaded="OnLoaded" Closing="OnClosing">
     <Window.Resources>
-        
-        <local:MainWindowViewModel x:Key="ViewModel"/>
-        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
-        <SolidColorBrush x:Key="DefaultGray" Color="#2A2A2A"/>
 
         <DataTemplate x:Key="SavedLogListItemTemplate">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="AUTO"/>
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding Path}"/>
-                <TextBlock Grid.Column="1" Text="{Binding Alias}"/>
+                <TextBlock Grid.Column="0" Text="{Binding Alias}"/>
+                <TextBlock Grid.Column="2" Text="{Binding Path}"/>
             </Grid>
-        </DataTemplate>
-
-        <Style x:Key="OpenSaveStyle" TargetType="ContentPresenter">
-            <Setter Property="SaveNoSaveTemplate" Value="{StaticResource NoSaveCheckboxTemplate}"/>
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SaveLog, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                    <Setter Property="SaveNoSaveTemplate" Value="{StaticResource NoSaveCheckboxTemplate}"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <DataTemplate x:Key="SaveCheckboxTemplate">
-            <DataTemplate.Triggers>
-                
-            </DataTemplate.Triggers>
-        </DataTemplate>
-
-        <DataTemplate x:Key="NoSaveCheckboxTemplate">
-
         </DataTemplate>
 
         <DataTemplate x:Key="OpenTemplate">
@@ -53,7 +31,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="60"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1">
@@ -74,20 +52,75 @@
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
-                                    <RowDefinition/>
                                 </Grid.RowDefinitions>
-                                <Grid Grid.Row="0" Grid.Column="1">
-                                    <TextBox x:Name="Path" Height="25" IsReadOnly="True"/>
-                                </Grid>
                                 <Grid Grid.Row="1" Grid.Column="1">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="50"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <ContentPresenter Style="{StaticResource SaveNoSaveTemplate}" Content="{Binding}"/>
+                                        <CheckBox x:Name="SaveCheckBox" IsChecked="{Binding SaveLog}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Save" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="White"/>
                                         <Button Grid.Column="1" Height="25" Content="Open" Click="OpenLog_Click"/>
                                     </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SaveTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="120"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1">
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Rectangle Grid.Row="0" Fill="Gray"/>
+                            <TextBlock Grid.Row="0" Text="Save Log" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,2"/>
+                            <Rectangle Grid.Row="1" Fill="{StaticResource DefaultGray}"/>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="285"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" Grid.Column="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="100"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition Height="35"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="Path" FontSize="8" Foreground="White" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Alias" Margin="5,0,0,0" FontSize="8" Foreground="White" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="0" Grid.Row="1" Text="{Binding Path, UpdateSourceTrigger=PropertyChanged}" Height="25" IsReadOnly="True" Margin="0,0,5,0" TextAlignment="Right"/>
+                                        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Alias, UpdateSourceTrigger=PropertyChanged}" Height="25" IsReadOnly="False" Margin="5,0,0,0"/>
+                                    </Grid>
+                                </Grid>
+                                <Grid Grid.Row="1" Grid.Column="1">
+                                    <Button Grid.Column="1" Height="25" Content="Save" Click="SaveLog_Click"/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -165,6 +198,7 @@
         <Grid>
             <Docking:DockManager Name="dockManager" Background="Black"/>
             <Rectangle 
+                x:Name="Background"
                 Visibility="{Binding Visible, Converter={StaticResource BoolToVisibility}}" 
                 Fill="Black" 
                 Opacity="0.75"/>
