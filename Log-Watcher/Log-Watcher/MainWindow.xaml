@@ -3,53 +3,175 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Docking="clr-namespace:DockingLibrary;assembly=DockingLibrary"
         xmlns:local="clr-namespace:Log_Watcher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" MinHeight="450" MinWidth="800"
+        Height="450" Width="800" Loaded="OnLoaded" Closing="OnClosing">
     <Window.Resources>
-        <local:LogViewModel x:Key="LogViewModelKey"/>
+        
+        <local:MainWindowViewModel x:Key="ViewModel"/>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+        <SolidColorBrush x:Key="DefaultGray" Color="#2A2A2A"/>
 
-        <DataTemplate x:Key="LogItemTemplate">
-            <TextBlock 
-                Text="{Binding Line}"
-                FontSize="9"/>
+        <DataTemplate x:Key="SavedLogListItemTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="{Binding Path}"/>
+                <TextBlock Grid.Column="1" Text="{Binding Alias}"/>
+            </Grid>
         </DataTemplate>
+
+        <Style x:Key="OpenSaveStyle" TargetType="ContentPresenter">
+            <Setter Property="SaveNoSaveTemplate" Value="{StaticResource NoSaveCheckboxTemplate}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SaveLog, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="SaveNoSaveTemplate" Value="{StaticResource NoSaveCheckboxTemplate}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="SaveCheckboxTemplate">
+            <DataTemplate.Triggers>
+                
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NoSaveCheckboxTemplate">
+
+        </DataTemplate>
+
+        <DataTemplate x:Key="OpenTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1">
+                    <Grid Grid.Row="1" Grid.Column="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Rectangle Grid.Row="0" Fill="Gray"/>
+                            <TextBlock Grid.Row="0" Text="Open Log" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,2"/>
+                            <Rectangle Grid.Row="1" Fill="{StaticResource DefaultGray}"/>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="285"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" Grid.Column="1">
+                                    <TextBox x:Name="Path" Height="25" IsReadOnly="True"/>
+                                </Grid>
+                                <Grid Grid.Row="1" Grid.Column="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <ContentPresenter Style="{StaticResource SaveNoSaveTemplate}" Content="{Binding}"/>
+                                        <Button Grid.Column="1" Height="25" Content="Open" Click="OpenLog_Click"/>
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="LoadTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="1" Grid.Column="1" BorderBrush="Gray" BorderThickness="1">
+                    <Grid>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Rectangle Grid.Row="0" Fill="Gray"/>
+                            <TextBlock Grid.Row="0" Text="Load Log" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,2"/>
+                            <Rectangle Grid.Row="1" Fill="{StaticResource DefaultGray}"/>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="285"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0" Grid.Column="1">
+                                    <ListBox 
+                                        ItemsSource="{Binding SavedLogs}"
+                                        ItemTemplate="{StaticResource SavedLogListItemTemplate}"
+                                        SelectedItem="{Binding SelectedLog}"
+                                        Margin="0,10,0,10"/>
+                                </Grid>
+                                <Grid Grid.Row="1" Grid.Column="1">
+                                    <Button Grid.Column="1" Height="25" Content="Load" Click="LoadLog_Click"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <Style x:Key="ContextStyle" TargetType="ContentPresenter">
+            <Setter Property="ContentTemplate" Value="{StaticResource OpenTemplate}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding WindowContextMenu, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static local:MainWindowContent.Save}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource SaveTemplate}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding WindowContextMenu, UpdateSourceTrigger=PropertyChanged}" Value="{x:Static local:MainWindowContent.Load}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource LoadTemplate}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
-    <Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" Background="{StaticResource DefaultGray}" Foreground="White">
+            <MenuItem Header="Open" Click="Open_Click"/>
+            <MenuItem Header="Load" Click="Load_Click"/>
+        </Menu>
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <ListBox 
-                x:Name="ServerLogListBox"
-                Grid.Column="0" 
-                ItemsSource="{Binding ServerLog, UpdateSourceTrigger=PropertyChanged}"
-                ItemTemplate="{StaticResource LogItemTemplate}"/>
-            <ListBox 
-                x:Name="ConsoleLogListBox"
-                Grid.Column="1" 
-                ItemsSource="{Binding ConsoleLog, UpdateSourceTrigger=PropertyChanged}"
-                ItemTemplate="{StaticResource LogItemTemplate}"/>
+            <Docking:DockManager Name="dockManager" Background="Black"/>
+            <Rectangle 
+                Visibility="{Binding Visible, Converter={StaticResource BoolToVisibility}}" 
+                Fill="Black" 
+                Opacity="0.75"/>
+            <ContentPresenter 
+                Visibility="{Binding Visible, Converter={StaticResource BoolToVisibility}}" 
+                Style="{StaticResource ContextStyle}" 
+                Content="{Binding}"/>
         </Grid>
-        <Grid x:Name="Overlay" Panel.ZIndex="1000"
-                Width="80" Height="40"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image x:Name="ServerLogPP" Source="{Binding ServerLogPPImage, UpdateSourceTrigger=PropertyChanged}"/>
-            </Grid>
-
-            <Image Grid.Column="1" x:Name="AllLogPP" Source="{Binding AllPPImage, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Grid Grid.Column="2" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Image x:Name="ConsoleLogPP" Source="{Binding ConsoleLogPPImage, UpdateSourceTrigger=PropertyChanged}"/>
-            </Grid>
-        </Grid>
-    </Grid>
+    </DockPanel>
 </Window>

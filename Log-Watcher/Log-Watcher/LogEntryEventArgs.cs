@@ -7,13 +7,9 @@ namespace Log_Watcher
     public class LogEntryEventArgs
     {
         public List<string> Logs;
-        public System.Windows.Controls.ListBox ListBox;
-        public ObservableCollection<LogItem> LogView;
-        public LogEntryEventArgs(List<string> logs, System.Windows.Controls.ListBox listBox, ObservableCollection<LogItem> logView)
+        public LogEntryEventArgs(List<string> logs)
         {
             Logs = logs;
-            ListBox = listBox;
-            LogView = logView;
         }
     }
 }

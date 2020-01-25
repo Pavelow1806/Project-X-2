@@ -26,5 +26,20 @@ namespace Log_Watcher.Properties
                 return defaultInstance;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DockingLayoutState
+        {
+            get
+            {
+                return ((string)(this["DockingLayoutState"]));
+            }
+            set
+            {
+                this["DockingLayoutState"] = value;
+            }
+        }
     }
 }

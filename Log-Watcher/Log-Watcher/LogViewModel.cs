@@ -9,70 +9,44 @@ namespace Log_Watcher
 {
     public sealed class LogViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<LogItem> serverLog = new ObservableCollection<LogItem>();
-        public ObservableCollection<LogItem> ServerLog
+        private ObservableCollection<LogItem> log = new ObservableCollection<LogItem>();
+        public ObservableCollection<LogItem> Log
         {
-            get { return serverLog; }
+            get { return log; }
             set
             {
-                if (serverLog != value)
+                if (log != value)
                 {
-                    serverLog = value;
-                    OnPropertyChanged("ServerLog");
-                }
-            }
-        }
-        private ObservableCollection<LogItem> consoleLog = new ObservableCollection<LogItem>();
-        public ObservableCollection<LogItem> ConsoleLog
-        {
-            get { return consoleLog; }
-            set
-            {
-                if (consoleLog != value)
-                {
-                    consoleLog = value;
-                    OnPropertyChanged("ConsoleLog");
+                    log = value;
+                    OnPropertyChanged("Log");
                 }
             }
         }
 
-        private ImageSource serverLogPPImage { get; set; }
-        public ImageSource ServerLogPPImage 
+        private ImageSource ppImage;
+        public ImageSource PPImage 
         { 
-            get { return serverLogPPImage; }
+            get { return ppImage; }
             set
             {
-                if (serverLogPPImage != value)
+                if (ppImage != value)
                 {
-                    serverLogPPImage = value;
-                    OnPropertyChanged("ServerLogPPImage");
+                    ppImage = value;
+                    OnPropertyChanged("PPImage");
                 }
             }
         }
 
-        public ImageSource allPPImage { get; set; }
-        public ImageSource AllPPImage
+        private bool logNotSaved { get; set; }
+        public bool LogNotSaved
         {
-            get { return allPPImage; }
+            get { return logNotSaved; }
             set
             {
-                if (allPPImage != value)
+                if (logNotSaved != value)
                 {
-                    allPPImage = value;
-                    OnPropertyChanged("AllPPImage");
-                }
-            }
-        }
-        public ImageSource consoleLogPPImage { get; set; }
-        public ImageSource ConsoleLogPPImage
-        {
-            get { return consoleLogPPImage; }
-            set
-            {
-                if (consoleLogPPImage != value)
-                {
-                    consoleLogPPImage = value;
-                    OnPropertyChanged("ConsoleLogPPImage");
+                    logNotSaved = value;
+                    OnPropertyChanged("LogNotSaved");
                 }
             }
         }
@@ -85,9 +59,7 @@ namespace Log_Watcher
 
         public LogViewModel()
         {
-            ServerLogPPImage = Resources.PauseButtonIcon.ImageSource();
-            AllPPImage = Resources.PauseButtonIcon.ImageSource();
-            ConsoleLogPPImage = Resources.PauseButtonIcon.ImageSource();
+            PPImage = Resources.PauseButtonIcon.ImageSource();
         }
     }
 }
