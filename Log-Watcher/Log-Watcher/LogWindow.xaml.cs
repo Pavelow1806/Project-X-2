@@ -33,7 +33,7 @@ namespace Log_Watcher
         public LogWindow(string LogFolder, string LogFileName, MainWindow Parent, string Alias = "", bool LogNotSaved = true)
         {
             InitializeComponent();
-            Title = $"{LogFileName}{(!string.IsNullOrEmpty(Alias) ? $" [{Alias}]" : "")}";
+            Title = $"{(!string.IsNullOrEmpty(Alias) ? $"{Alias} [{LogFileName}]" : $"{LogFileName}")}";
             LogViewModel.LogNotSaved = LogNotSaved;
             MWVM = (MainWindowViewModel)Parent.DataContext;
             DockManager = Parent.dockManager;
@@ -59,9 +59,9 @@ namespace Log_Watcher
             using (var sr = new StreamReader(fs))
             {
                 if (reader.LastPosition != -1)
-                    fs.Seek(reader.LastPosition, SeekOrigin.Begin);
+                    fs.Seek(reader.LastPosition, SeekOrigin.Current);
 
-                result = sr.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                result = sr.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Take(MainWindow.MaxLogs).ToList();
                 reader.LastPosition = fs.Length;
             }
             return result;
@@ -70,21 +70,26 @@ namespace Log_Watcher
         {
             LogEntryEventArgs e = (LogEntryEventArgs)state;
             if (e == null) return;
+            if (e.Logs == null)
+            {
+                Log.Write(LogType.Error, "The Logs list sent was null.");
+                return;
+            }
+            if (e.Logs.Count == 0)
+            {
+                Log.Write(LogType.Information, "The Log doesn't contain anything yet.");
+                return;
+            }
 
-            foreach (var log in e.Logs)
+            Log.Write(LogType.Debug, $"Setting the Logs view model value, which contains {e.Logs.Count} lines...");
+            foreach (var item in e.Logs)
             {
                 lock (LogViewModel.Log)
                 {
-                    LogViewModel.Log.Add(new LogItem(log));
+                    LogViewModel.Log.Add(new LogItem(item));
                 }
             }
-            while (LogViewModel.Log.Count > MainWindow.MaxLogs)
-            {
-                lock (LogViewModel.Log)
-                {
-                    LogViewModel.Log.RemoveAt(0);
-                }
-            }
+            Log.Write(LogType.Debug, "Logs view model value set.");
         }
         private void PPImage_OnClick(object sender, MouseButtonEventArgs e)
         {

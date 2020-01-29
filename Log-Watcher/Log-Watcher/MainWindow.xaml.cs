@@ -107,7 +107,7 @@ namespace Log_Watcher
                 Log.Write(LogType.Error, "There was not log selected.");
                 return;
             }
-            LogWindow lw = new LogWindow(System.IO.Path.GetDirectoryName(vm.SelectedLog.Path), System.IO.Path.GetFileName(vm.SelectedLog.Path), this, vm.Alias);
+            LogWindow lw = new LogWindow(System.IO.Path.GetDirectoryName(vm.SelectedLog.Path), System.IO.Path.GetFileName(vm.SelectedLog.Path), this, vm.SelectedLog.Alias);
             LogWindows.Add(lw);
             lw.CloseWindow += WindowOnClose;
             lw.Show();

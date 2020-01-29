@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>PlayButtonIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\PlayButtonIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Core">
@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="SavedLog.cs" />
+    <Compile Include="Extensions\StreamExtensions.cs" />
     <Page Include="LogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -81,7 +82,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BitmapExtensions.cs" />
+    <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="ContentEnums.cs" />
     <Compile Include="Converters.cs" />
     <Compile Include="LogEntryEventArgs.cs" />
@@ -113,6 +114,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -126,16 +128,16 @@
     <None Include="Resources\Play.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PauseButtonIcon.png" />
+    <None Include="Resources\PauseButtonIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PlayButtonIcon.png" />
+    <None Include="Resources\PlayButtonIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="PlayButtonIcon.ico" />
+    <Resource Include="Resources\PlayButtonIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SaveButtonIcon.png" />
+    <None Include="Resources\SaveButtonIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

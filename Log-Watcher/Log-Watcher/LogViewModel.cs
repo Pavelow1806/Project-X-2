@@ -1,6 +1,7 @@
 ﻿using Log_Watcher.Properties;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -70,10 +71,15 @@ namespace Log_Watcher
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(value));
         }
+        private void OnLogsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged("Log");
+        }
 
         public LogViewModel()
         {
             PPImage = Resources.PauseButtonIcon.ImageSource();
+            Log.CollectionChanged += OnLogsChanged;
         }
     }
 }
