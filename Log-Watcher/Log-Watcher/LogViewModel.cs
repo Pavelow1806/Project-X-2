@@ -1,4 +1,5 @@
-﻿using Log_Watcher.Properties;
+﻿using Core;
+using Log_Watcher.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -8,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Log_Watcher
 {
-    public sealed class LogViewModel : INotifyPropertyChanged
+    public sealed class LogViewModel : ViewModelBase
     {
         private ObservableCollection<LogItem> log = new ObservableCollection<LogItem>();
         public ObservableCollection<LogItem> Log
@@ -52,6 +53,20 @@ namespace Log_Watcher
             }
         }
 
+        private string title = null;
+        public string Title
+        {
+            get { return title; }
+            set
+            {
+                if (title != value)
+                {
+                    title = value;
+                    OnPropertyChanged("Title");
+                }
+            }
+        }
+
         private bool logNotSaved { get; set; } = true;
         public bool LogNotSaved
         {
@@ -66,11 +81,6 @@ namespace Log_Watcher
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string value)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(value));
-        }
         private void OnLogsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Log");

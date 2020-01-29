@@ -5,4 +5,3 @@ C:\Users\james\Documents\GitHub\Project-X-2\Core\Core\bin\Debug\ByteBuffer.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Core\Core\obj\Debug\Core.csproj.CopyComplete
 C:\Users\james\Documents\GitHub\Project-X-2\Core\Core\obj\Debug\Core.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Core\Core\obj\Debug\Core.pdb
-C:\Users\james\Documents\GitHub\Project-X-2\Core\Core\obj\Debug\Core.csprojAssemblyReference.cache

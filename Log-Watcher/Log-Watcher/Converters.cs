@@ -12,11 +12,17 @@ namespace Log_Watcher
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((bool)value ? "Visible" : "Hidden");
+            if (value is bool)
+                return ((bool)value ? "Visible" : "Hidden");
+
+            return Binding.DoNothing;
         }
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((string)value == "Visible" ? true : false);
+            if (value is string)
+                return ((string)value == "Visible" ? true : false);
+
+            return Binding.DoNothing;
         }
     }
 }

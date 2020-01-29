@@ -41,9 +41,6 @@
     <Reference Include="Core">
       <HintPath>..\..\Core\Core\bin\Debug\Core.dll</HintPath>
     </Reference>
-    <Reference Include="DockingLibrary">
-      <HintPath>..\..\DockingLibrary\bin\Debug\DockingLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -62,12 +59,17 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>.\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CommandHandler.cs" />
+    <Compile Include="PaneViewModel.cs" />
     <Compile Include="SavedLog.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Page Include="LogWindow.xaml">

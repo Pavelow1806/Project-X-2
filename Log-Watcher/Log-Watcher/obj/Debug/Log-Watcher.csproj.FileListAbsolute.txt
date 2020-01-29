@@ -2,10 +2,8 @@ C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Lo
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Log-Watcher.exe
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Log-Watcher.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Core.dll
-C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\DockingLibrary.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Core.pdb
-C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\DockingLibrary.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\ByteBuffer.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\LogWindow.g.cs
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\MainWindow.g.cs
@@ -22,4 +20,5 @@ C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Lo
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.exe
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\App.baml
-C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.csprojAssemblyReference.cache
+C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Xceed.Wpf.AvalonDock.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Xceed.Wpf.AvalonDock.pdb

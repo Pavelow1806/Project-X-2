@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Docking="clr-namespace:DockingLibrary;assembly=DockingLibrary"
+        xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:Docking="clr-namespace:Microsoft.Windows.Shell;assembly=Xceed.Wpf.AvalonDock"
         xmlns:local="clr-namespace:Log_Watcher"
         mc:Ignorable="d"
         Title="MainWindow" MinHeight="450" MinWidth="800"
@@ -61,7 +62,7 @@
                                         </Grid.ColumnDefinitions>
                                         <CheckBox x:Name="SaveCheckBox" IsChecked="{Binding SaveLog}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         <TextBlock Text="Save" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0" Foreground="White"/>
-                                        <Button Grid.Column="1" Height="25" Content="Open" Click="OpenLog_Click"/>
+                                        <Button Grid.Column="1" Height="25" Content="Open" Command="{Binding OpenLog_Click}"/>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -120,7 +121,7 @@
                                     </Grid>
                                 </Grid>
                                 <Grid Grid.Row="1" Grid.Column="1">
-                                    <Button Grid.Column="1" Height="25" Content="Save" Click="SaveLog_Click"/>
+                                    <Button Grid.Column="1" Height="25" Content="Save" Command="{Binding SaveLog_Click}"/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -169,7 +170,7 @@
                                         Margin="0,10,0,10"/>
                                 </Grid>
                                 <Grid Grid.Row="1" Grid.Column="1">
-                                    <Button Grid.Column="1" Height="25" Content="Load" Click="LoadLog_Click"/>
+                                    <Button Grid.Column="1" Height="25" Content="Load" Command="{Binding LoadLog_Click}"/>
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -192,11 +193,13 @@
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="{StaticResource DefaultGray}" Foreground="White">
-            <MenuItem Header="Open" Click="Open_Click"/>
-            <MenuItem Header="Load" Click="Load_Click"/>
+            <MenuItem Header="Open" Command="{Binding Open_Click}"/>
+            <MenuItem Header="Load" Command="{Binding Load_Click}"/>
         </Menu>
         <Grid>
-            <Docking:DockManager Name="dockManager" Background="Black"/>
+            <avalonDock:DockingManager 
+                x:Name="dockManager"
+                DocumentsSource="{Binding LogWindows}"/>
             <Rectangle 
                 x:Name="Background"
                 Visibility="{Binding Visible, Converter={StaticResource BoolToVisibility}}" 

@@ -21,7 +21,7 @@ namespace Log_Watcher
     /// <summary>
     /// Interaction logic for LogWindow.xaml
     /// </summary>
-    public partial class LogWindow : DockingLibrary.DockableContent
+    public partial class LogWindow : Window
     {
         LogViewModel LogViewModel = new LogViewModel();
         LogReader LogReader;
@@ -30,14 +30,13 @@ namespace Log_Watcher
         string FullPath = "";
 
         public EventHandler CloseWindow;
-        public LogWindow(string LogFolder, string LogFileName, MainWindow Parent, string Alias = "", bool LogNotSaved = true)
+        public LogWindow(string LogFolder, string LogFileName, MainWindowViewModel Parent, string Alias = "", bool LogNotSaved = true)
         {
             InitializeComponent();
-            Title = $"{(!string.IsNullOrEmpty(Alias) ? $"{Alias} [{LogFileName}]" : $"{LogFileName}")}";
             LogViewModel.LogNotSaved = LogNotSaved;
-            MWVM = (MainWindowViewModel)Parent.DataContext;
-            DockManager = Parent.dockManager;
+            MWVM = Parent;
             DataContext = LogViewModel;
+            LogViewModel.Title = $"{(!string.IsNullOrEmpty(Alias) ? $"{Alias} [{LogFileName}]" : $"{LogFileName}")}";
             LogPP.MouseLeftButtonUp += PPImage_OnClick;
             LogSave.MouseLeftButtonUp += SaveIcon_OnClick;
             LogReader = new LogReader(LogFolder, LogFileName);
@@ -61,7 +60,7 @@ namespace Log_Watcher
                 if (reader.LastPosition != -1)
                     fs.Seek(reader.LastPosition, SeekOrigin.Current);
 
-                result = sr.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Take(MainWindow.MaxLogs).ToList();
+                result = sr.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Take(MainWindowViewModel.MaxLogs).ToList();
                 reader.LastPosition = fs.Length;
             }
             return result;
