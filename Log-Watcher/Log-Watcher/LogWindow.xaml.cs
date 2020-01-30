@@ -37,12 +37,15 @@ namespace Log_Watcher
         {
             InitializeComponent();
             FullPath = System.IO.Path.Combine(LogFolder, logFileName);
-            var fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             long initCount = 0;
-            using (StreamReader sr = new StreamReader(fs))
+            if (File.Exists(FullPath))
             {
-                initCount = sr.LineCount();
-                initCount = (initCount > MainWindowViewModel.MaxLogs ? MainWindowViewModel.MaxLogs : initCount);
+                var fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using (StreamReader sr = new StreamReader(fs))
+                {
+                    initCount = sr.LineCount();
+                    initCount = (initCount > MainWindowViewModel.MaxLogs ? MainWindowViewModel.MaxLogs : initCount);
+                }
             }
             LogViewModel = new LogViewModel(alias, logFileName, initCount);
             LogViewModel.LogNotSaved = LogNotSaved;
@@ -75,17 +78,21 @@ namespace Log_Watcher
         }
         private List<string> ProcessChange(string FullPath, LogReader reader)
         {
-            List<string> result = new List<string>();
-            var fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            using (var sr = new StreamReader(fs))
+            if (File.Exists(FullPath))
             {
-                if (reader.LastPosition != -1)
-                    fs.Seek(reader.LastPosition, SeekOrigin.Current);
+                List<string> result = new List<string>();
+                var fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                using (var sr = new StreamReader(fs))
+                {
+                    if (reader.LastPosition != -1)
+                        fs.Seek(reader.LastPosition, SeekOrigin.Current);
 
-                result = sr.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Take(MainWindowViewModel.MaxLogs).ToList();
-                reader.LastPosition = fs.Length;
+                    result = sr.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Take(MainWindowViewModel.MaxLogs).ToList();
+                    reader.LastPosition = fs.Length;
+                }
+                return result;
             }
-            return result;
+            return null;
         }
         private void NewLogEntries(object state)
         {
