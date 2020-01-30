@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Log_Watcher
 {
-    public sealed class LogViewModel : ViewModelBase
+    public sealed class LogViewModel : PaneViewModel
     {
         private ObservableCollection<LogItem> log = new ObservableCollection<LogItem>();
         public ObservableCollection<LogItem> Log
@@ -53,20 +53,6 @@ namespace Log_Watcher
             }
         }
 
-        private string title = null;
-        public string Title
-        {
-            get { return title; }
-            set
-            {
-                if (title != value)
-                {
-                    title = value;
-                    OnPropertyChanged("Title");
-                }
-            }
-        }
-
         private bool logNotSaved { get; set; } = true;
         public bool LogNotSaved
         {
@@ -86,10 +72,47 @@ namespace Log_Watcher
             OnPropertyChanged("Log");
         }
 
-        public LogViewModel()
+        #region Title
+
+        private string _title = null;
+        public string Title
         {
+            get { return _title; }
+            set
+            {
+                if (_title != value)
+                {
+                    _title = value;
+                    OnPropertyChanged("Title");
+                }
+            }
+        }
+
+        #endregion
+        public LogViewModel(string alias, string logFileName)
+        {
+            IsDirty = true;
+            Title = $"{(!string.IsNullOrEmpty(alias) ? $"{alias} [{logFileName}]" : $"{logFileName}")}";
             PPImage = Resources.PauseButtonIcon.ImageSource();
             Log.CollectionChanged += OnLogsChanged;
         }
+        #region IsDirty
+
+        private bool _isDirty = false;
+        public bool IsDirty
+        {
+            get { return _isDirty; }
+            set
+            {
+                if (_isDirty != value)
+                {
+                    _isDirty = value;
+                    OnPropertyChanged("IsDirty");
+                    OnPropertyChanged("FileName");
+                }
+            }
+        }
+
+        #endregion
     }
 }

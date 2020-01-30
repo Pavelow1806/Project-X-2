@@ -21,30 +21,31 @@ namespace Log_Watcher
     /// <summary>
     /// Interaction logic for LogWindow.xaml
     /// </summary>
-    public partial class LogWindow : Window
+    public partial class LogWindow : System.Windows.Controls.UserControl
     {
-        LogViewModel LogViewModel = new LogViewModel();
+        LogViewModel LogViewModel;
         LogReader LogReader;
         WindowsFormsSynchronizationContext UIThread = new WindowsFormsSynchronizationContext();
         MainWindowViewModel MWVM;
         string FullPath = "";
 
         public EventHandler CloseWindow;
-        public LogWindow(string LogFolder, string LogFileName, MainWindowViewModel Parent, string Alias = "", bool LogNotSaved = true)
+        public LogWindow(string LogFolder, string logFileName, MainWindowViewModel Parent, string alias = "", bool LogNotSaved = true)
         {
             InitializeComponent();
+            LogViewModel = new LogViewModel(alias, logFileName);
             LogViewModel.LogNotSaved = LogNotSaved;
             MWVM = Parent;
             DataContext = LogViewModel;
-            LogViewModel.Title = $"{(!string.IsNullOrEmpty(Alias) ? $"{Alias} [{LogFileName}]" : $"{LogFileName}")}";
             LogPP.MouseLeftButtonUp += PPImage_OnClick;
+            
             LogSave.MouseLeftButtonUp += SaveIcon_OnClick;
-            LogReader = new LogReader(LogFolder, LogFileName);
-            FullPath = System.IO.Path.Combine(LogFolder, LogFileName);
+            LogReader = new LogReader(LogFolder, logFileName);
+            FullPath = System.IO.Path.Combine(LogFolder, logFileName);
             LogReader.Changed += OnChange;
             LogReader.Start();
             // Manual refresh
-            OnChange(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, LogFolder, LogFileName));
+            OnChange(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, LogFolder, logFileName));
         }
 
         private void OnChange(object source, FileSystemEventArgs e)

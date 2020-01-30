@@ -8,29 +8,12 @@ using System.Windows.Media;
 
 namespace Log_Watcher
 {
-    class PaneViewModel : ViewModelBase
+    public class PaneViewModel : ViewModelBase
     {
         public PaneViewModel()
         { }
 
 
-        #region Title
-
-        private string _title = null;
-        public string Title
-        {
-            get { return _title; }
-            set
-            {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged("Title");
-                }
-            }
-        }
-
-        #endregion
 
         public ImageSource IconSource
         {

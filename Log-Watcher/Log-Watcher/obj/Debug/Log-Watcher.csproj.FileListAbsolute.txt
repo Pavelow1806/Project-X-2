@@ -22,3 +22,4 @@ C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Lo
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\App.baml
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Xceed.Wpf.AvalonDock.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Debug\Xceed.Wpf.AvalonDock.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Debug\Log-Watcher.csprojAssemblyReference.cache

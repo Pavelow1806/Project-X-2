@@ -9,6 +9,7 @@
         mc:Ignorable="d"
         Title="MainWindow" MinHeight="450" MinWidth="800"
         Height="450" Width="800" Loaded="OnLoaded" Closing="OnClosing">
+    
     <Window.Resources>
 
         <DataTemplate x:Key="SavedLogListItemTemplate">
@@ -191,6 +192,7 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
+    
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="{StaticResource DefaultGray}" Foreground="White">
             <MenuItem Header="Open" Command="{Binding Open_Click}"/>
@@ -199,7 +201,13 @@
         <Grid>
             <avalonDock:DockingManager 
                 x:Name="dockManager"
-                DocumentsSource="{Binding LogWindows}"/>
+                DocumentsSource="{Binding LogWindows}">
+                <avalonDock:DockingManager.LayoutItemContainerStyle>
+                    <Style TargetType="{x:Type avalonDock:LayoutItem}">
+                        <Setter Property="Title" Value="{Binding Title}"/>
+                    </Style>
+                </avalonDock:DockingManager.LayoutItemContainerStyle>
+            </avalonDock:DockingManager>
             <Rectangle 
                 x:Name="Background"
                 Visibility="{Binding Visible, Converter={StaticResource BoolToVisibility}}" 

@@ -152,7 +152,7 @@ namespace Log_Watcher
                 LogWindow lw = new LogWindow(System.IO.Path.GetDirectoryName(path), System.IO.Path.GetFileName(path), this);
                 logWindows.Add(lw);
                 lw.CloseWindow += WindowOnClose;
-                lw.Show();
+                //lw.Show();
                 Path = path;
                 if (SaveLog)
                 {
@@ -191,7 +191,6 @@ namespace Log_Watcher
             LogWindow lw = new LogWindow(System.IO.Path.GetDirectoryName(SelectedLog.Path), System.IO.Path.GetFileName(SelectedLog.Path), this, SelectedLog.Alias);
             logWindows.Add(lw);
             lw.CloseWindow += WindowOnClose;
-            lw.Show();
             Visible = false;
         }
 
@@ -208,7 +207,7 @@ namespace Log_Watcher
             lock (LogWindows)
             {
                 logWindows.Remove(lw);
-                lw.Close();
+                //lw.Close();
                 lw = null;
             }
         }
