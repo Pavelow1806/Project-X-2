@@ -234,14 +234,15 @@ namespace Core
         private void ConnectToServer(ConnectionType Destination, int MaxConnectionAttempts = -1)
         {
             int Port;
-            if (!Network.Instance.ServerAuthenticated(Destination))
+            if (!ServerAuthenticated(Destination))
             {
                 int? ServerPort = GetDestinationPort(Destination);
                 if (ServerPort != null)
                 {
                     Port = (int)ServerPort;
                     Server Server = new Server(Destination, Port);
-                    Servers.Add(Destination, Server);
+                    RegisterServerEvents(Server);
+                    ServerQueue.Add(Server);
                     Server.StartConnecting(MaxConnectionAttempts);
                 }
                 else
@@ -351,12 +352,14 @@ namespace Core
             {
                 Servers[e.Type] = null;
                 Servers.Remove(e.Type);
+                Log.Write(LogType.Connection, $"{e.Type.ToString()} was closed, server removed from servers list");
                 return;
             }
             if (ServerQueue.Contains(e.Server))
             {
                 e.Server = null;
                 ServerQueue.Remove(e.Server);
+                Log.Write(LogType.Connection, $"{e.Type.ToString()} was closed, server removed from server queue");
             }
         }
         #endregion

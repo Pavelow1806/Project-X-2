@@ -62,41 +62,54 @@ namespace Core
             DataThread = new Thread(new ThreadStart(BeginThread));
             DataThread.Start();
         }
+        private void CloseConnection()
+        {
+            if (Connected)
+            {
+                if (this is Server)
+                {
+                    Server s = (Server)this;
+                    s.Close();
+                }
+                else
+                {
+                    Close();
+                }
+            }
+        }
         public virtual void Close()
         {
+            Connected = false;
             lock (lockObj)
             {
-                if (Connected)
+                // Network
+                ReadBuff = null;
+                ReadBuff = null;
+                if (Socket != null)
                 {
-                    // Network
-                    ReadBuff = null;
-                    ReadBuff = null;
-                    if (Socket != null)
-                    {
-                        Socket.Close();
-                        Socket = null;
-                    }
-                    if (Stream != null)
-                    {
-                        Stream.Close();
-                        Stream = null;
-                    }
-                    if (Reader != null)
-                    {
-                        Reader.Close();
-                        Reader = null;
-                    }
-                    if (Writer != null)
-                    {
-                        Writer.Close();
-                        Writer = null;
-                    }
-
-                    Connected = false;
-
-                    // Rejoin main thread
-                    DataThread.Join();
+                    Socket.Close();
+                    Socket = null;
                 }
+                if (Stream != null)
+                {
+                    Stream.Close();
+                    Stream = null;
+                }
+                if (Reader != null)
+                {
+                    Reader.Close();
+                    Reader = null;
+                }
+                if (Writer != null)
+                {
+                    Writer.Close();
+                    Writer = null;
+                }
+
+                Connected = false;
+
+                // Rejoin main thread
+                DataThread.Join();
             }
         }
 
@@ -115,16 +128,15 @@ namespace Core
             {
                 if (Stream != null)
                 {
-                    if (Connected)
+                    if (Socket != null && Connected)
                     {
                         Stream.BeginRead(ReadBuff, 0, Socket.ReceiveBufferSize, HandleAsyncConnection, null);
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Log.Write($"An error occurred when beginning {nameof(Stream).ToString()}'s BeginRead function", ex);
-                Close();
+
             }
         }
         private void HandleAsyncConnection(IAsyncResult result)
@@ -138,32 +150,23 @@ namespace Core
             {
                 try
                 {
-                    int ReadBytes = Stream.EndRead(result);
-                    if (Socket == null)
-                    {
+                    if (Socket == null || !Connected)
                         return;
-                    }
+                    int ReadBytes = Stream.EndRead(result);
+
                     byte[] Bytes = null;
                     Array.Resize(ref Bytes, ReadBytes);
                     Buffer.BlockCopy(ReadBuff, 0, Bytes, 0, ReadBytes);
                     if (ReadBytes <= 0)
                     {
-                        if (this is Server)
-                        {
-                            Server s = (Server)this;
-                            s.Close();
-                        }
-                        else
-                        {
-                            Close();
-                        }
+                        CloseConnection();
                         return;
                     }
 
                     // Process the packet
                     Packet packet = ProcessData.Process(this, Index, Bytes);
 
-                    if (this is Server && !Network.Instance.ServerAuthenticated(packet.Source))
+                    if (this is Server)
                     {
                         Server s = (Server)this;
                         if (!s.Authenticated)
@@ -173,10 +176,13 @@ namespace Core
                             ProcessData.ReadHeader(ref buffer);
                             if (buffer.ReadString() == Network.Instance.AuthenticationCode)
                             {
-                                // Add to list of authenticated servers
-                                s.Authenticate(packet.Source);
-                                // Confirm authentication with reply
-                                SendData.Authenticate(Network.Instance.MyConnectionType, packet.Source, Network.Instance.AuthenticationCode);
+                                if (!s.Authenticated)
+                                {
+                                    // Add to list of authenticated servers
+                                    s.Authenticate(packet.Source);
+                                    // Confirm authentication with reply
+                                    SendData.Authenticate(Network.Instance.MyConnectionType, packet.Source, Network.Instance.AuthenticationCode);
+                                }
                             }
                         }
                     }
@@ -185,24 +191,28 @@ namespace Core
                         OnPacketReceived(this, new PacketEventArgs(packet));
                     }
 
+                    if (Socket == null || !Connected)
+                        return;
                     Stream.BeginRead(ReadBuff, 0, Socket.ReceiveBufferSize, OnReceiveData, null);
+                }
+                catch (ArgumentException aex)
+                {
+                    Log.Write($"An error occurred when receiving data (ArgumentException) [{aex.Message}]", aex);
+                }
+                catch (IOException ioex)
+                {
+                    Log.Write($"An error occurred when receiving data (IOException, closing connection) [{ioex.Message}]", ioex);
+                    CloseConnection();
+                }
+                catch (ObjectDisposedException odex)
+                {
+                    Log.Write($"An error occurred when receiving data (ArgumentException, closing connection) [{odex.Message}]", odex);
+                    CloseConnection();
                 }
                 catch (Exception ex)
                 {
-                    // Output error message
-                    Log.Write("An error occurred when receiving data", ex);
-                    if (Socket == null || !Socket.Connected)
-                    {
-                        if (this is Server)
-                        {
-                            Server s = (Server)this;
-                            s.Close();
-                        }
-                        else
-                        {
-                            Close();
-                        }
-                    }
+                    Log.Write($"An error occurred when receiving data (Exception, closing connection) [{ex.Message}]", ex);
+                    CloseConnection();
                 }
             }
         }

@@ -14,7 +14,7 @@ namespace Login_Server
             Log.Write(LogType.Information, $"Starting to process packet:\n{e.Packet.ToString()}");
             switch (e.Packet.Source)
             {
-                case ConnectionType.NONE:
+                case ConnectionType.UNKNOWN:
                     Log.Write(LogType.Error, $"The source type was invalid");
                     return;
                 case ConnectionType.GAMESERVER:

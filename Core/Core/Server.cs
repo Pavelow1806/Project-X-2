@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -148,6 +149,23 @@ namespace Core
                 Array.Resize(ref ReadBuff, Constants.BufferSize * 2);
                 Socket.BeginConnect(IP, Port, new AsyncCallback(ConnectCallback), Socket);
             }
+            catch (ArgumentNullException anex)
+            {
+                Log.Write($"The server failed to connect (ObjectDisposedException, closing connection) [{anex.Message}]", Type, anex);
+            }
+            catch (SocketException sex)
+            {
+                Log.Write($"The server failed to connect (SocketException, closing connection) [{sex.Message}]", Type, sex);
+                Close();
+            }
+            catch (ObjectDisposedException odex)
+            {
+                Log.Write($"The server failed to connect (ObjectDisposedException, closing connection) [{odex.Message}]", Type, odex);
+            }
+            catch (ArgumentOutOfRangeException aoorex)
+            {
+                Log.Write($"The server failed to connect (ArgumentOutOfRangeException, closing connection) [{aoorex.Message}]", Type, aoorex);
+            }
             catch (Exception ex)
             {
                 Log.Write("The server failed to connect", Type, ex);
@@ -170,7 +188,7 @@ namespace Core
                     {
                         Socket.NoDelay = true;
                         Stream = Socket.GetStream();
-                        Stream.BeginRead(ReadBuff, 0, Constants.BufferSize * 2, base.OnReceiveData, null);
+                        Stream.BeginRead(ReadBuff, 0, Constants.BufferSize * 2, OnReceiveData, null);
                         ConnectedTime = DateTime.Now;
                         Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
                         Connected = true;
@@ -193,7 +211,7 @@ namespace Core
                 Connected = false;
                 Connect(MaxConnectionAttempts);
             }
-            else
+            else if (Connected)
             {
                 Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()} was closed");
                 OnClose(this, new ServerConnectionEventArgs(this, IP, Type));
@@ -213,6 +231,7 @@ namespace Core
         }
         public void Authenticate(ConnectionType type)
         {
+            Type = type;
             AuthenticationSuccessful = true;
             if (AuthenticateTimer != null) AuthenticateTimer.Enabled = false;
             OnAuthenticate(this, new ServerConnectionEventArgs(this, IP, type));
