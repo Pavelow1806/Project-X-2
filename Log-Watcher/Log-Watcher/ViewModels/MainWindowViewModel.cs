@@ -135,7 +135,7 @@ namespace Log_Watcher
             Visible = false;
         }
 
-        private void OpenLog_Click(object sender, RoutedEventArgs e)
+        private void OpenLog()
         {
             OpenFileDialog fd = new OpenFileDialog
             {
@@ -254,6 +254,15 @@ namespace Log_Watcher
             get
             {
                 return OpenCommand ?? (OpenCommand = new CommandHandler(() => Open(), () => CanExecute));
+            }
+        }
+
+        private ICommand OpenLogCommand = null;
+        public ICommand OpenLog_Click
+        {
+            get
+            {
+                return OpenLogCommand ?? (OpenLogCommand = new CommandHandler(() => OpenLog(), () => CanExecute));
             }
         }
 

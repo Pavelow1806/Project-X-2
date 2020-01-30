@@ -69,7 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CommandHandler.cs" />
-    <Compile Include="PaneViewModel.cs" />
+    <Compile Include="ViewModels\PaneViewModel.cs" />
     <Compile Include="SavedLog.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Page Include="LogWindow.xaml">
@@ -87,9 +87,9 @@
     <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="ContentEnums.cs" />
     <Compile Include="Converters.cs" />
-    <Compile Include="LogEntryEventArgs.cs" />
+    <Compile Include="EventArguments\LogEntryEventArgs.cs" />
     <Compile Include="LogItem.cs" />
-    <Compile Include="LogViewModel.cs" />
+    <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
@@ -99,7 +99,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -141,5 +141,6 @@
   <ItemGroup>
     <None Include="Resources\SaveButtonIcon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

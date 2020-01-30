@@ -6,12 +6,18 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Linq;
 
 namespace Log_Watcher
 {
     public sealed class LogViewModel : PaneViewModel
     {
         private ObservableCollection<LogItem> log = new ObservableCollection<LogItem>();
+        public event NotifyCollectionChangedEventHandler ItemAdded
+        {
+            add { log.CollectionChanged += value; }
+            remove { log.CollectionChanged -= value; }
+        }
         public ObservableCollection<LogItem> Log
         {
             get { return log; }
@@ -67,6 +73,18 @@ namespace Log_Watcher
             }
         }
 
+        private long InitialCount = 0;
+        public bool Ready
+        {
+            get
+            {
+                if (log.Count >= InitialCount)
+                    return true;
+                else
+                    return false;
+            }
+        }
+
         private void OnLogsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Log");
@@ -89,9 +107,10 @@ namespace Log_Watcher
         }
 
         #endregion
-        public LogViewModel(string alias, string logFileName)
+        public LogViewModel(string alias, string logFileName, long initialCount = 0)
         {
             IsDirty = true;
+            InitialCount = initialCount;
             Title = $"{(!string.IsNullOrEmpty(alias) ? $"{alias} [{logFileName}]" : $"{logFileName}")}";
             PPImage = Resources.PauseButtonIcon.ImageSource();
             Log.CollectionChanged += OnLogsChanged;

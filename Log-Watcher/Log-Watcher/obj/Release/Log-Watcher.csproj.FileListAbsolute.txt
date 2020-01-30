@@ -5,7 +5,6 @@ C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Release\
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Release\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Release\Core.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Release\ByteBuffer.pdb
-C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\Log-Watcher.csprojAssemblyReference.cache
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\MainWindow.g.cs
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\App.g.cs
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\GeneratedInternalTypeHelper.g.cs
@@ -23,3 +22,4 @@ C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Release\Xceed.Wpf.AvalonDock.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\bin\Release\Xceed.Wpf.AvalonDock.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\App.baml
+C:\Users\james\Documents\GitHub\Project-X-2\Log-Watcher\Log-Watcher\obj\Release\Log-Watcher.csprojAssemblyReference.cache

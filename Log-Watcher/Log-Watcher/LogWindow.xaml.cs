@@ -1,6 +1,7 @@
 ﻿using Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -30,24 +31,44 @@ namespace Log_Watcher
         string FullPath = "";
 
         public EventHandler CloseWindow;
+
+        private ScrollViewer SV;
         public LogWindow(string LogFolder, string logFileName, MainWindowViewModel Parent, string alias = "", bool LogNotSaved = true)
         {
             InitializeComponent();
-            LogViewModel = new LogViewModel(alias, logFileName);
+            FullPath = System.IO.Path.Combine(LogFolder, logFileName);
+            var fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            long initCount = 0;
+            using (StreamReader sr = new StreamReader(fs))
+            {
+                initCount = sr.LineCount();
+                initCount = (initCount > MainWindowViewModel.MaxLogs ? MainWindowViewModel.MaxLogs : initCount);
+            }
+            LogViewModel = new LogViewModel(alias, logFileName, initCount);
             LogViewModel.LogNotSaved = LogNotSaved;
             MWVM = Parent;
             DataContext = LogViewModel;
             LogPP.MouseLeftButtonUp += PPImage_OnClick;
-            
+            LogViewModel.ItemAdded += ScrollToNewItem;
             LogSave.MouseLeftButtonUp += SaveIcon_OnClick;
             LogReader = new LogReader(LogFolder, logFileName);
-            FullPath = System.IO.Path.Combine(LogFolder, logFileName);
+            OnChange(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, LogFolder, logFileName));
             LogReader.Changed += OnChange;
             LogReader.Start();
             // Manual refresh
-            OnChange(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, LogFolder, logFileName));
         }
 
+        private void ScrollToNewItem(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (LogViewModel.Ready && e.Action == NotifyCollectionChangedAction.Add && LogListBox.Items.Count > 0)
+            {
+                if (SV == null)
+                {
+                    SV = (ScrollViewer)VisualTreeHelper.GetChild((Border)VisualTreeHelper.GetChild(LogListBox, 0), 0);
+                }
+                SV.ScrollToBottom();
+            }
+        }
         private void OnChange(object source, FileSystemEventArgs e)
         {
             UIThread.Post(new System.Threading.SendOrPostCallback(NewLogEntries), new LogEntryEventArgs(ProcessChange(e.FullPath, LogReader)));
