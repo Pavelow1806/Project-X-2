@@ -71,6 +71,15 @@ namespace Core
         }
         private readonly string ClusterIP = "";
 
+        private int serverIndex = 0;
+        public int ServerIndex
+        {
+            get
+            {
+                return serverIndex++;
+            }
+        }
+
         #region TCP
         private readonly Listener ServerListener = null;
         private readonly Listener ClientListener = null;

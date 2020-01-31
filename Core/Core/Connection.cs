@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public class Connection
+    public abstract class Connection
     {
         public ConnectionType Type;
 
@@ -169,6 +169,7 @@ namespace Core
                     if (this is Server)
                     {
                         Server s = (Server)this;
+                        ServerPacket sp = (ServerPacket)packet;
                         if (!s.Authenticated)
                         {
                             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(new List<object>());
@@ -179,9 +180,9 @@ namespace Core
                                 if (!s.Authenticated)
                                 {
                                     // Add to list of authenticated servers
-                                    s.Authenticate(packet.Source);
+                                    s.Authenticate(sp.Source);
                                     // Confirm authentication with reply
-                                    SendData.Authenticate(Network.Instance.MyConnectionType, s, Network.Instance.AuthenticationCode);
+                                    SendData.Authenticate(Network.Instance.MyConnectionType, s.Index, s, Network.Instance.AuthenticationCode);
                                 }
                             }
                         }

@@ -19,6 +19,7 @@ namespace Core
         private bool RepeatConnections = false;
         private int MaxConnectionAttempts = -1;
         private bool TryingToConnect = false;
+        public int MyIndex = -1;
 
         public bool Authenticated { get { return AuthenticationSuccessful; } }
 
@@ -27,7 +28,7 @@ namespace Core
         /// </summary>
         /// <param name="type">The server that has connected.</param>
         public Server(ConnectionType type) :
-            base(type, -1)
+            base(type, Network.Instance.ServerIndex)
         {
             Network.Instance.RegisterServerEvents(this);
         }
@@ -39,7 +40,7 @@ namespace Core
         /// <param name="port">The port of the server.</param>
         /// <param name="IP">The IP address of the server. (Default 127.0.0.1)</param>
         public Server(ConnectionType type, int port, string IP = "127.0.0.1") :
-            base(type, -1, port, IP)
+            base(type, Network.Instance.ServerIndex, port, IP)
         {
             Network.Instance.RegisterServerEvents(this);
         }
@@ -198,7 +199,7 @@ namespace Core
                         ConnectedTime = DateTime.Now;
                         Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
                         Connected = true;
-                        SendData.Authenticate(Network.Instance.MyConnectionType, this, Network.Instance.AuthenticationCode);
+                        SendData.Authenticate(Network.Instance.MyConnectionType, Index, this, Network.Instance.AuthenticationCode);
                     }
                 }
             }

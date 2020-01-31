@@ -47,9 +47,37 @@ namespace Core
                 Log.Write(ex);
             }
         }
-        public static void BuildBasePacket(ConnectionType Source, int packetNumber, ref ByteBuffer.ByteBuffer buffer)
+        /// <summary>
+        /// Build the header for sending to a server from either a client or server.
+        /// </summary>
+        /// <param name="DestinationType">The </param>
+        /// <param name="Destination"></param>
+        /// <param name="PacketNumber"></param>
+        /// <param name="buffer"></param>
+        public static void BuildBasePacket(AssetType DestinationType, Server Destination, int PacketNumber, ref ByteBuffer.ByteBuffer buffer)
         {
-            buffer.WriteInteger((int)Source);
+            buffer.WriteInteger((int)DestinationType);
+            if (Destination.Authenticated)
+            {
+                buffer.WriteInteger((int)Network.Instance.MyConnectionType);
+                buffer.WriteInteger((int)Destination.Type);
+            }
+            else
+            {
+                buffer.WriteInteger(Destination.MyIndex);
+                buffer.WriteInteger(Destination.Index);
+            }
+            buffer.WriteInteger(PacketNumber);
+        }
+        /// <summary>
+        /// Build the header for sending from a server to a client.
+        /// </summary>
+        /// <param name="Destination">The Client that will be receiving the packet.</param>
+        /// <param name="packetNumber">The number, to be translated into execution via enum.</param>
+        /// <param name="buffer">The buffer being used to write to.</param>
+        public static void BuildBasePacket(Client Destination, int packetNumber, ref ByteBuffer.ByteBuffer buffer)
+        {
+            buffer.WriteInteger((int)AssetType.CLIENT);
             buffer.WriteInteger(packetNumber);
         }
 
@@ -89,7 +117,7 @@ namespace Core
                 client = c;
                 return "";
         }
-        private static string CheckDestination(string IP, ConnectionType connectionType, out Server server, bool CheckQueue = false)
+        private static string CheckDestination(string IP, ConnectionType connectionType, out Server server, int Index = -1)
         {
             if (!Enum.IsDefined(typeof(ConnectionType), connectionType))
             {
@@ -97,11 +125,11 @@ namespace Core
                 return $"The Server connection type parameter {connectionType.ToString()} was not valid.";
             }
             Server s = null;
-            if (CheckQueue)
+            if (Index > -1)
             {
                 lock (Network.Instance.ServerQueue)
                 {
-                    if (!Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
+                    if (!Network.Instance.ServerQueue.Any(x => x.Index == Index))
                     {
                         lock (Network.Instance.Servers)
                         {
@@ -116,9 +144,10 @@ namespace Core
                             s = Network.Instance.Servers[connectionType];
                         }
                     }
-                    server = Network.Instance.ServerQueue.SingleOrDefault(x => x.IP == IP);
+                    s = Network.Instance.ServerQueue.SingleOrDefault(x => x.Index == Index);
                     if (s == null)
                     {
+                        server = null;
                         return "The server found could not be found in the server queue";
                     }
                 }
@@ -165,14 +194,14 @@ namespace Core
         /// </summary>
         /// <param name="Server">This server (this)</param>
         /// <param name="Destination">The Destination server</param>
-        public static void Authenticate(ConnectionType Source, Server Destination, string AuthenticationCode)
+        public static void Authenticate(ConnectionType Source, int Index, Server Destination, string AuthenticationCode)
         {
             List<object> Contents = new List<object>();
             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
-            BuildBasePacket(Source, -1, ref buffer);
+            BuildBasePacket(Source, Index, -1, ref buffer);
             buffer.WriteString(AuthenticationCode);
             Server server = null;
-            string output = CheckDestination(Destination.IP, Destination.Type, out server, true);
+            string output = CheckDestination(Destination.IP, Destination.Type, out server, Destination.Index);
             if (server == null)
             {
                 Log.Write(LogType.Error, output);

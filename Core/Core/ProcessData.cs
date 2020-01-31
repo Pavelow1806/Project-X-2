@@ -10,6 +10,15 @@ namespace Core
 {
     public static class ProcessData
     {
+        public static ServerPacket Process(Server Source, int DestinationIndex, byte[] data)
+        {
+
+        }
+        public static ClientPacket Process(Client Source, byte[] data)
+        {
+
+            ClientPacket packet;
+        }
         public static Packet Process(Connection connection, int index, byte[] data)
         {
             try
@@ -19,9 +28,22 @@ namespace Core
                 buffer.WriteBytes(data);
 
                 ConnectionType Source = (ConnectionType)buffer.ReadInteger();
+
+                if (Source == ConnectionType.CLIENT)
+                {
+                    ClientPacket cp = new ClientPacket(
+                        new Packets.PacketParams
+                        {
+                            data = data,
+                            packetNumber = buffer.ReadInteger(),
+                            packetName = "Undefined"
+                        });
+                }
+
+                int ServerIndex = buffer.ReadInteger();
                 int PacketNumber = buffer.ReadInteger();
 
-                Packet packet = new Packet(PacketNumber, "", connection.IP, index, connection.Type, Source, Contents, data);
+                Packet packet = new Packet(PacketNumber, "", connection.IP, (Source == ConnectionType.CLIENT ? index : ServerIndex), connection.Type, Source, Contents, data);
 
                 return packet;
             }
@@ -33,6 +55,7 @@ namespace Core
         }
         public static void ReadHeader(ref ByteBuffer.ByteBuffer buffer)
         {
+            buffer.ReadInteger();
             buffer.ReadInteger();
             buffer.ReadInteger();
         }

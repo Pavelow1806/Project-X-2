@@ -17,4 +17,3 @@ C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Applicat
 C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\bin\Debug\ByteBuffer.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\james\Documents\GitHub\Project-X-2\Console-Application\Console-Application\obj\Debug\Console-Application.csprojAssemblyReference.cache
