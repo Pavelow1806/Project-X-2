@@ -30,6 +30,16 @@ namespace Core
                 ChangeState();
             }
         }
+        public event FileSystemEventHandler Deleted
+        {
+            add { fsw.Deleted += value; }
+            remove { fsw.Deleted -= value; }
+        }
+        public event RenamedEventHandler Renamed
+        {
+            add { fsw.Renamed += value; }
+            remove { fsw.Renamed -= value; }
+        }
         private int SubscriberCount = 0;
         private bool pause { get; set; } = false;
         public bool Pause
@@ -72,12 +82,6 @@ namespace Core
             if (!Directory.Exists(logFolder))
             {
                 Log.Write(LogType.Error, $"The LogReader directory of {logFolder} didn't exist.");
-                return;
-            }
-            string fullPath = Path.Combine(logFolder, logFileName);
-            if (!File.Exists(fullPath))
-            {
-                Log.Write(LogType.Error, $"The LogReader file of {fullPath} didn't exist.");
                 return;
             }
             if (SubscriberCount <= 0)

@@ -57,6 +57,8 @@ namespace Log_Watcher
             LogReader = new LogReader(LogFolder, logFileName);
             OnChange(this, new FileSystemEventArgs(WatcherChangeTypes.Changed, LogFolder, logFileName));
             LogReader.Changed += OnChange;
+            LogReader.Deleted += OnChange;
+            LogReader.Renamed += OnRenamed;
             LogReader.Start();
             // Manual refresh
         }
@@ -74,14 +76,36 @@ namespace Log_Watcher
         }
         private void OnChange(object source, FileSystemEventArgs e)
         {
+            
+            
+            if (e.ChangeType == WatcherChangeTypes.Deleted)
+                UIThread.Post(new System.Threading.SendOrPostCallback(ClearLog), null);
+
             UIThread.Post(new System.Threading.SendOrPostCallback(NewLogEntries), new LogEntryEventArgs(ProcessChange(e.FullPath, LogReader)));
         }
         private List<string> ProcessChange(string FullPath, LogReader reader)
         {
             if (File.Exists(FullPath))
             {
-                List<string> result = new List<string>();
                 var fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                long newLines = 0;
+                using (StreamReader sr = new StreamReader(fs)) { newLines = sr.LineCount(); }
+                if (LogViewModel.Log.Count > LogViewModel.TotalLines)
+                {
+                    Log.Write(LogType.Error, "The Logs list had less than before, clearing.");
+                    lock (LogViewModel.Log)
+                    {
+                        UIThread.Post(new System.Threading.SendOrPostCallback(ClearLog), null);
+                    }
+                    LogReader.LastPosition = 0;
+                    return null;
+                }
+                else
+                {
+                    LogViewModel.TotalLines = newLines;
+                }
+                List<string> result = new List<string>();
+                fs = new FileStream(FullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 using (var sr = new StreamReader(fs))
                 {
                     if (reader.LastPosition != -1)
@@ -101,6 +125,10 @@ namespace Log_Watcher
             if (e.Logs == null)
             {
                 Log.Write(LogType.Error, "The Logs list sent was null.");
+                lock (LogViewModel.Log)
+                {
+                    LogViewModel.Log.Clear();
+                }
                 return;
             }
             if (e.Logs.Count == 0)
@@ -119,6 +147,22 @@ namespace Log_Watcher
             }
             Log.Write(LogType.Debug, "Logs view model value set.");
         }
+
+        private void OnRenamed(object source, RenamedEventArgs e)
+        {
+            if (System.IO.Path.GetDirectoryName(e.FullPath) != System.IO.Path.GetDirectoryName(FullPath))
+            {
+                UIThread.Post(new System.Threading.SendOrPostCallback(ClearLog), null);
+            }
+        }
+        private void ClearLog(object state)
+        {
+            lock (LogViewModel.Log)
+            {
+                LogViewModel.Log.Clear();
+            }
+        }
+
         private void PPImage_OnClick(object sender, MouseButtonEventArgs e)
         {
             if (LogReader.Pause)

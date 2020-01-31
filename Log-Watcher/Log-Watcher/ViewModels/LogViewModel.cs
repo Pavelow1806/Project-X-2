@@ -85,6 +85,8 @@ namespace Log_Watcher
             }
         }
 
+        public long TotalLines = 0;
+
         private void OnLogsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Log");
