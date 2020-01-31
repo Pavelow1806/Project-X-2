@@ -21,7 +21,7 @@ namespace Core
                 ConnectionType Source = (ConnectionType)buffer.ReadInteger();
                 int PacketNumber = buffer.ReadInteger();
 
-                Packet packet = new Packet(PacketNumber, "", index, connection.Type, Source, Contents, data);
+                Packet packet = new Packet(PacketNumber, "", connection.IP, index, connection.Type, Source, Contents, data);
 
                 return packet;
             }

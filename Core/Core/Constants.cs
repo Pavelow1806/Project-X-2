@@ -19,7 +19,7 @@ namespace Core
         public const int ClientPort = 5600;
         public const int BufferSize = 4096;
         public const int MillisecondsBetweenAttemptingConnect = 5000;
-        public const double MillisecondsToAuthenticateBeforeDisconnect = 5000.0;
+        public const double MillisecondsToAuthenticateBeforeDisconnect = 30000.0;
         public const int MaxToolConnectAttempts = 5;
         public const string ClusterLocalIP = "127.0.0.1";
         #endregion

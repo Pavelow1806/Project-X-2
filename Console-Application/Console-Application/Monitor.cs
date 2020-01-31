@@ -35,7 +35,7 @@ namespace Console_Application
                 return;
             }
             server.State = "Green";
-            Send.RequestLogs(e.Type);
+            Send.RequestLogs(e.Server);
         }
     }
 }

@@ -69,7 +69,15 @@ namespace Log_Watcher
             {
                 if (SV == null)
                 {
-                    SV = (ScrollViewer)VisualTreeHelper.GetChild((Border)VisualTreeHelper.GetChild(LogListBox, 0), 0);
+                    if (VisualTreeHelper.GetChildrenCount(LogListBox) > 0)
+                    {
+                        Border B = (Border)VisualTreeHelper.GetChild(LogListBox, 0);
+                        if (B != null)
+                        {
+                            if (VisualTreeHelper.GetChildrenCount(B) > 0)
+                                SV = (ScrollViewer)VisualTreeHelper.GetChild(B, 0);
+                        }
+                    }
                 }
                 SV.ScrollToBottom();
             }

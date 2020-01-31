@@ -181,14 +181,14 @@ namespace Core
                                     // Add to list of authenticated servers
                                     s.Authenticate(packet.Source);
                                     // Confirm authentication with reply
-                                    SendData.Authenticate(Network.Instance.MyConnectionType, packet.Source, Network.Instance.AuthenticationCode);
+                                    SendData.Authenticate(Network.Instance.MyConnectionType, s, Network.Instance.AuthenticationCode);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        OnPacketReceived(this, new PacketEventArgs(packet));
+                        OnPacketReceived(this, new PacketEventArgs(packet, this));
                     }
 
                     if (Socket == null || !Connected)

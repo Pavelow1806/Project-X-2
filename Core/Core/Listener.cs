@@ -78,9 +78,20 @@ namespace Core
 
                         try
                         {
+                            server.IP = socket.Client.RemoteEndPoint.ToString();
+
+                            lock (Network.Instance.ServerQueue)
+                            {
+                                if (Network.Instance.ServerQueue.Any(x => x.IP == server.IP))
+                                {
+                                    Log.Write(LogType.Error, "A server with an identical IP address and port has connected, disconnecting");
+                                    server.Close();
+                                    return;
+                                }
+                            }
+
                             server.Connected = true;
                             server.Socket = socket;
-                            server.IP = socket.Client.RemoteEndPoint.ToString();
                             server.Username = "System";
                             server.SessionID = "System";
 

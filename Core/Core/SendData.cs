@@ -28,7 +28,7 @@ namespace Core
                         break;
                     case AssetType.SERVER:
                         Server server = null;
-                        output = CheckDestination(packet.Destination, out server);
+                        output = CheckDestination(packet.IP, packet.Destination, out server);
                         if (server == null)
                         {
                             Log.Write(LogType.Error, output);
@@ -89,7 +89,7 @@ namespace Core
                 client = c;
                 return "";
         }
-        private static string CheckDestination(ConnectionType connectionType, out Server server)
+        private static string CheckDestination(string IP, ConnectionType connectionType, out Server server, bool CheckQueue = false)
         {
             if (!Enum.IsDefined(typeof(ConnectionType), connectionType))
             {
@@ -97,17 +97,51 @@ namespace Core
                 return $"The Server connection type parameter {connectionType.ToString()} was not valid.";
             }
             Server s = null;
-            lock (Network.Instance.Servers)
+            if (CheckQueue)
             {
-                if (!Network.Instance.Servers.ContainsKey(connectionType))
+                lock (Network.Instance.ServerQueue)
                 {
-                    server = null;
-                    if (Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
-                        return $"The Server with connection type {connectionType.ToString()} has connected, but has not yet authenticated.";
-                    else
-                        return $"The Server with connection type {connectionType.ToString()} is not connected.";
+                    if (!Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
+                    {
+                        lock (Network.Instance.Servers)
+                        {
+                            if (!Network.Instance.Servers.ContainsKey(connectionType))
+                            {
+                                server = null;
+                                if (Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
+                                    return $"The Server with connection type {connectionType.ToString()} has connected, but has not yet authenticated.";
+                                else
+                                    return $"The Server with connection type {connectionType.ToString()} is not connected.";
+                            }
+                            s = Network.Instance.Servers[connectionType];
+                        }
+                    }
+                    server = Network.Instance.ServerQueue.SingleOrDefault(x => x.IP == IP);
+                    if (s == null)
+                    {
+                        return "The server found could not be found in the server queue";
+                    }
                 }
-                s = Network.Instance.Servers[connectionType];
+            }
+            else
+            {
+                lock (Network.Instance.Servers)
+                {
+                    if (!Network.Instance.Servers.ContainsKey(connectionType))
+                    {
+                        server = null;
+                        if (Network.Instance.ServerQueue.Any(x => x.Type == connectionType))
+                            return $"The Server with connection type {connectionType.ToString()} has connected, but has not yet authenticated.";
+                        else
+                            return $"The Server with connection type {connectionType.ToString()} is not connected.";
+                    }
+                    s = Network.Instance.Servers[connectionType];
+                }
+            }
+            if (s == null)
+            {
+                server = null;
+                return $"The socket was null";
             }
             if (!s.Connected)
             {
@@ -131,14 +165,14 @@ namespace Core
         /// </summary>
         /// <param name="Server">This server (this)</param>
         /// <param name="Destination">The Destination server</param>
-        public static void Authenticate(ConnectionType Source, ConnectionType Destination, string AuthenticationCode)
+        public static void Authenticate(ConnectionType Source, Server Destination, string AuthenticationCode)
         {
             List<object> Contents = new List<object>();
             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
             BuildBasePacket(Source, -1, ref buffer);
             buffer.WriteString(AuthenticationCode);
             Server server = null;
-            string output = CheckDestination(Destination, out server);
+            string output = CheckDestination(Destination.IP, Destination.Type, out server, true);
             if (server == null)
             {
                 Log.Write(LogType.Error, output);
@@ -148,7 +182,7 @@ namespace Core
             Log.Write(LogType.TransmissionOut, $"Authentication packet sent to Server on connection type {server.Type.ToString()}");
         }
 
-        public static void SendLogs(ConnectionType Source, ConnectionType Destination)
+        public static void SendLogs(ConnectionType Source, Server Destination)
         {
             List<string> logs = new List<string>(Log.LogContent);
             foreach (string log in logs)
@@ -156,7 +190,7 @@ namespace Core
                 List<object> Contents = new List<object>();
                 ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
                 buffer.WriteString(log);
-                Packet packet = new Packet((int)ToolProcessPacketNumbers.SendLogs, ToolProcessPacketNumbers.SendLogs.ToString(), -1, Destination, Source, buffer.ToArray());
+                Packet packet = new Packet((int)ToolProcessPacketNumbers.SendLogs, ToolProcessPacketNumbers.SendLogs.ToString(), Destination.IP, -1, Destination.Type, Source, buffer.ToArray());
                 Send(packet);
             }
         }

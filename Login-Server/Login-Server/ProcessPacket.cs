@@ -27,7 +27,7 @@ namespace Login_Server
                 case ConnectionType.SYNCSERVER:
                     break;
                 case ConnectionType.TOOL:
-                    Process_ToolPacket(e.Packet);
+                    Process_ToolPacket(e.Packet, (Server)e.Source);
                     break;
                 default:
                     Log.Write(LogType.Error, $"The source type was invalid");
@@ -35,12 +35,12 @@ namespace Login_Server
             }
             Log.Write(LogType.Information, $"Finished processing packet:\n{e.Packet.ToString()}");
         }
-        public static void Process_ToolPacket(Packet packet)
+        public static void Process_ToolPacket(Packet packet, Server Destination)
         {
             switch ((ToolSendPacketNumbers)packet.PacketNumber)
             {
                 case ToolSendPacketNumbers.RequestLogs:
-                    SendData.SendLogs(packet.Destination, packet.Source);
+                    SendData.SendLogs(packet.Destination, Destination);
                     break;
                 default:
                     break;

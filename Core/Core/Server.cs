@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -17,6 +18,7 @@ namespace Core
         private bool AuthenticationSuccessful = false;
         private bool RepeatConnections = false;
         private int MaxConnectionAttempts = -1;
+        private bool TryingToConnect = false;
 
         public bool Authenticated { get { return AuthenticationSuccessful; } }
 
@@ -98,6 +100,9 @@ namespace Core
             if (maxConnectionAttempts.GetType() != typeof(int)) return;
             MaxConnectionAttempts = (int)maxConnectionAttempts;
             int ConnectionAttemptCount = 0;
+            if (TryingToConnect)
+                return;
+            TryingToConnect = true;
             while ((!Connected && (MaxConnectionAttempts == -1 || ConnectionAttemptCount < MaxConnectionAttempts)) || !Authenticated)
             {
                 ++ConnectionAttemptCount;
@@ -121,6 +126,7 @@ namespace Core
                     Thread.Sleep(Constants.MillisecondsBetweenAttemptingConnect);
                 }
             }
+            TryingToConnect = false;
             OutgoingConnectionThread.Join();
         }
         private void Connect()
@@ -186,19 +192,34 @@ namespace Core
                     }
                     else
                     {
-                        Socket.NoDelay = true;
+                        Socket.NoDelay = false;
                         Stream = Socket.GetStream();
                         Stream.BeginRead(ReadBuff, 0, Constants.BufferSize * 2, OnReceiveData, null);
                         ConnectedTime = DateTime.Now;
                         Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
                         Connected = true;
-                        SendData.Authenticate(Network.Instance.MyConnectionType, Type, Network.Instance.AuthenticationCode);
+                        SendData.Authenticate(Network.Instance.MyConnectionType, this, Network.Instance.AuthenticationCode);
                     }
                 }
             }
+            catch (ArgumentException aex)
+            {
+                Log.Write($"An error occurred when receiving data (ArgumentException) [{aex.Message}]", aex);
+            }
+            catch (IOException ioex)
+            {
+                Log.Write($"An error occurred when receiving data (IOException, closing connection) [{ioex.Message}]", ioex);
+                Close();
+            }
+            catch (ObjectDisposedException odex)
+            {
+                Log.Write($"An error occurred when receiving data (ArgumentException, closing connection) [{odex.Message}]", odex);
+                Close();
+            }
             catch (Exception ex)
             {
-                Log.Write("The server failed to connect", Type, ex);
+                Log.Write($"An error occurred when receiving data (Exception, closing connection) [{ex.Message}]", ex);
+                Close();
             }
         }
 
@@ -206,14 +227,14 @@ namespace Core
         {
             if (RepeatConnections) 
             {
-                Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()} was closed, attempting to reconnect..");
+                Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()}{(Type == ConnectionType.UNKNOWN ? $" {IP}" : "")} was closed, attempting to reconnect..");
                 Socket = null;
                 Connected = false;
                 Connect(MaxConnectionAttempts);
             }
             else if (Connected)
             {
-                Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()} was closed");
+                Log.Write(LogType.Connection, $"The Connection for type {Type.ToString()}{(Type == ConnectionType.UNKNOWN ? $" {IP}" : "")} was closed");
                 OnClose(this, new ServerConnectionEventArgs(this, IP, Type));
                 base.Close();
                 AuthenticationSuccessful = false;

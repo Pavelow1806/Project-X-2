@@ -37,11 +37,12 @@ namespace Core
         public ConnectionType Source = ConnectionType.UNKNOWN;
         public int Index;
 
+        public string IP = "";
         public int PacketNumber;
         public string PacketName = "";
         public List<object> Contents = null;
         public byte[] Data;
-        public Packet(int packetNumber, string packetName, int index, ConnectionType destination, ConnectionType source, byte[] data)
+        public Packet(int packetNumber, string packetName, string ip, int index, ConnectionType destination, ConnectionType source, byte[] data)
         {
             PacketNumber = packetNumber;
             PacketName = packetName;
@@ -49,8 +50,9 @@ namespace Core
             Destination = destination;
             Source = source;
             Data = data;
+            IP = ip;
         }
-        public Packet(int packetNumber, string packetName, int index, ConnectionType destination, ConnectionType source, List<object> contents, byte[] data)
+        public Packet(int packetNumber, string packetName, string ip, int index, ConnectionType destination, ConnectionType source, List<object> contents, byte[] data)
         {
             PacketNumber = packetNumber;
             PacketName = packetName;
@@ -59,6 +61,7 @@ namespace Core
             Source = source;
             Contents = contents;
             Data = data;
+            IP = ip;
         }
         public override string ToString()
         {

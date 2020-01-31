@@ -22,9 +22,11 @@ namespace Core
     public class PacketEventArgs : EventArgs
     {
         public Packet Packet;
-        public PacketEventArgs(Packet packet)
+        public Connection Source;
+        public PacketEventArgs(Packet packet, Connection source)
         {
             Packet = packet;
+            Source = source;
         }
     }
 }

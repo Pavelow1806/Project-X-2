@@ -241,6 +241,15 @@ namespace Core
                 {
                     Port = (int)ServerPort;
                     Server Server = new Server(Destination, Port);
+                    lock (ServerQueue)
+                    {
+                        if (ServerQueue.Any(x => x.IP == Server.IP && x.Port == Server.Port))
+                        {
+                            Log.Write(LogType.Error, $"Stopped attempt to create duplicate connection on IP {Server.IP} and port {Server.Port}");
+                            return;
+                        }
+                    }
+
                     RegisterServerEvents(Server);
                     ServerQueue.Add(Server);
                     Server.StartConnecting(MaxConnectionAttempts);
@@ -348,18 +357,31 @@ namespace Core
         }
         private void Server_OnClose(object sender, ServerConnectionEventArgs e)
         {
-            if (Servers.ContainsKey(e.Type))
+            try
             {
-                Servers[e.Type] = null;
-                Servers.Remove(e.Type);
-                Log.Write(LogType.Connection, $"{e.Type.ToString()} was closed, server removed from servers list");
-                return;
+                lock (Servers)
+                {
+                    if (Servers.ContainsKey(e.Type))
+                    {
+                        Servers[e.Type] = null;
+                        Servers.Remove(e.Type);
+                        Log.Write(LogType.Connection, $"{e.Type.ToString()}{(e.Type == ConnectionType.UNKNOWN ? $" {e.IP}" : "")} was closed, server removed from servers list");
+                        return;
+                    }
+                }
+                lock (ServerQueue)
+                {
+                    if (ServerQueue.Contains(e.Server))
+                    {
+                        e.Server = null;
+                        ServerQueue.Remove(e.Server);
+                        Log.Write(LogType.Connection, $"{e.Type.ToString()}{(e.Type == ConnectionType.UNKNOWN ? $" {e.IP}" : "")} was closed, server removed from server queue");
+                    }
+                }
             }
-            if (ServerQueue.Contains(e.Server))
+            catch (Exception ex)
             {
-                e.Server = null;
-                ServerQueue.Remove(e.Server);
-                Log.Write(LogType.Connection, $"{e.Type.ToString()} was closed, server removed from server queue");
+                Log.Write("An error was thrown during Server_OnClose", ex);
             }
         }
         #endregion
