@@ -60,6 +60,9 @@
     <Compile Include="Packets\Params\PacketParams.cs" />
     <Compile Include="Packets\UnauthServerPacket.cs" />
     <Compile Include="ProcessData.cs" />
+    <Compile Include="Protocols\DataType.cs" />
+    <Compile Include="Protocols\PacketDefinition.cs" />
+    <Compile Include="Protocols\Protocol.cs" />
     <Compile Include="SendData.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Packets\ServerPacket.cs" />

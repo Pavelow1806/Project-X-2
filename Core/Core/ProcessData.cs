@@ -16,7 +16,6 @@ namespace Core
         }
         public static ClientPacket Process(Client Source, byte[] data)
         {
-
             ClientPacket packet;
         }
         public static Packet Process(Connection connection, int index, byte[] data)

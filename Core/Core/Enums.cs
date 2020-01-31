@@ -8,6 +8,32 @@ using System.Threading.Tasks;
 
 namespace Core
 {
+    #region Protocol
+    public enum ProtocolDirection
+    {
+        UNKNOWN,
+        Inbound,
+        Outbound
+    }
+    #endregion
+
+    #region Data Types
+    public enum DataTypes
+    {
+        UNKNOWN,
+        [Description("string")]
+        String,
+        [Description("byte")]
+        Byte,
+        [Description("byte[]")]
+        Bytes,
+        [Description("float")]
+        Float,
+        [Description("int")]
+        Integer
+    }
+    #endregion
+
     #region Ports
     public enum Ports
     {
