@@ -8,6 +8,7 @@ namespace Log_Watcher
         public LogItem(string line)
         {
             Line = line;
+
         }
     }
 }
