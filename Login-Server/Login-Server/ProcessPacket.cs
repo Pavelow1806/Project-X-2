@@ -23,6 +23,7 @@ namespace Login_Server
                     break;
                 case ConnectionType.LOGINSERVER:
                     Log.Write(LogType.Error, $"The source type was invalid");
+
                     return;
                 case ConnectionType.SYNCSERVER:
                     break;
