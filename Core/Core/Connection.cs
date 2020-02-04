@@ -39,9 +39,20 @@ namespace Core
         #endregion
 
         #region Events
-        public EventHandler<PacketEventArgs> OnPacketReceived;
-        public EventHandler<PacketEventArgs> OnPacketSent;
+        public EventHandler<NewDataEventArgs> OnDataReceived;
+        public EventHandler<NewDataEventArgs> OnDataSent;
+        public event EventHandler<ConnectionEventArgs> OnClose;
         #endregion
+
+        public bool Available
+        {
+            get
+            {
+                if (Socket == null)
+                    return true;
+                return false;
+            }
+        }
 
         public Connection(ConnectionType type, int id)
         {
@@ -56,27 +67,6 @@ namespace Core
             Index = id;
         }
 
-        public virtual void Start()
-        {
-            ConnectedTime = DateTime.Now;
-            DataThread = new Thread(new ThreadStart(BeginThread));
-            DataThread.Start();
-        }
-        private void CloseConnection()
-        {
-            if (Connected)
-            {
-                if (this is Server)
-                {
-                    Server s = (Server)this;
-                    s.Close();
-                }
-                else
-                {
-                    Close();
-                }
-            }
-        }
         public virtual void Close()
         {
             Connected = false;
@@ -113,6 +103,13 @@ namespace Core
             }
         }
 
+        #region Inbound Connections
+        public virtual void Start()
+        {
+            ConnectedTime = DateTime.Now;
+            DataThread = new Thread(new ThreadStart(BeginThread));
+            DataThread.Start();
+        }
         public void BeginThread()
         {
             Socket.SendBufferSize = Constants.BufferSize;
@@ -121,7 +118,6 @@ namespace Core
             Array.Resize(ref ReadBuff, Socket.ReceiveBufferSize);
             StartAccept();
         }
-
         private void StartAccept()
         {
             try
@@ -134,16 +130,16 @@ namespace Core
                     }
                 }
             }
-            catch (Exception)
-            {
-
-            }
+            catch (Exception) { }
         }
         private void HandleAsyncConnection(IAsyncResult result)
         {
             StartAccept();
             OnReceiveData(result);
         }
+        #endregion
+
+        #region On Data Receive
         protected void OnReceiveData(IAsyncResult result)
         {
             lock (lockObj)
@@ -159,38 +155,12 @@ namespace Core
                     Buffer.BlockCopy(ReadBuff, 0, Bytes, 0, ReadBytes);
                     if (ReadBytes <= 0)
                     {
-                        CloseConnection();
+                        Close();
                         return;
                     }
 
                     // Process the packet
-                    Packet packet = ProcessData.Process(this, Index, Bytes);
-
-                    if (this is Server)
-                    {
-                        Server s = (Server)this;
-                        ServerPacket sp = (ServerPacket)packet;
-                        if (!s.Authenticated)
-                        {
-                            ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(new List<object>());
-                            buffer.WriteBytes(packet.Data);
-                            ProcessData.ReadHeader(ref buffer);
-                            if (buffer.ReadString() == Network.Instance.AuthenticationCode)
-                            {
-                                if (!s.Authenticated)
-                                {
-                                    // Add to list of authenticated servers
-                                    s.Authenticate(sp.Source);
-                                    // Confirm authentication with reply
-                                    SendData.Authenticate(Network.Instance.MyConnectionType, s.Index, s, Network.Instance.AuthenticationCode);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        OnPacketReceived(this, new PacketEventArgs(packet, this));
-                    }
+                    OnDataReceived(this, new NewDataEventArgs(Bytes));
 
                     if (Socket == null || !Connected)
                         return;
@@ -203,19 +173,20 @@ namespace Core
                 catch (IOException ioex)
                 {
                     Log.Write($"An error occurred when receiving data (IOException, closing connection) [{ioex.Message}]", ioex);
-                    CloseConnection();
+                    Close();
                 }
                 catch (ObjectDisposedException odex)
                 {
                     Log.Write($"An error occurred when receiving data (ArgumentException, closing connection) [{odex.Message}]", odex);
-                    CloseConnection();
+                    Close();
                 }
                 catch (Exception ex)
                 {
                     Log.Write($"An error occurred when receiving data (Exception, closing connection) [{ex.Message}]", ex);
-                    CloseConnection();
+                    Close();
                 }
             }
         }
+        #endregion
     }
 }

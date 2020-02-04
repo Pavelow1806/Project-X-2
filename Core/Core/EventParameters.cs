@@ -1,21 +1,41 @@
-﻿using System;
+﻿//using Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Core
 {
-    public class ServerConnectionEventArgs : EventArgs
+    public class ListenerCallbackEventArgs : EventArgs
     {
-        public Server Server;
+        public TcpClient NewConnection;
+        public ListenerCallbackEventArgs(TcpClient newConnection)
+        {
+            NewConnection = newConnection;
+        }
+    }
+
+    public class NewConnectionEventArgs : EventArgs
+    {
+        public Connection Connection;
         public string IP;
         public ConnectionType Type;
-        public ServerConnectionEventArgs(Server server, string ip, ConnectionType type)
+        public NewConnectionEventArgs(Connection connection, string ip, ConnectionType type)
         {
-            Server = server;
+            Connection = connection;
             IP = ip;
             Type = type;
+        }
+    }
+
+    public class NewDataEventArgs : EventArgs
+    {
+        public byte[] Data;
+        public NewDataEventArgs(byte[] data)
+        {
+            Data = data;
         }
     }
 
@@ -27,6 +47,19 @@ namespace Core
         {
             Packet = packet;
             Source = source;
+        }
+    }
+
+    public class ConnectionEventArgs : EventArgs
+    {
+        public Connection Connection;
+        public string IP;
+        public ConnectionType Type;
+        public ConnectionEventArgs(Connection connection, string ip, ConnectionType type)
+        {
+            Connection = connection;
+            IP = ip;
+            Type = type;
         }
     }
 }

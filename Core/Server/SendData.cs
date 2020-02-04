@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,41 +7,41 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public static class SendData
+    public class SendData : SendDataBase
     {
         public static void Send(Packet packet)
         {
             try
             {
                 string output;
-                switch (packet.DestinationType)
-                {
-                    case AssetType.CLIENT:
-                        Client client = null;
-                        output = CheckDestination(packet.Index, out client);
-                        if (client == null)
-                        {
-                            Log.Write(LogType.Error, output);
-                            return;
-                        }
-                        client.Stream.BeginWrite(packet.Data, 0, packet.Data.Length, null, null);
-                        Log.Write(LogType.TransmissionOut, $"Packet sent to Client on Index {client.Index.ToString()}: {packet.ToString()}");
-                        break;
-                    case AssetType.SERVER:
-                        Server server = null;
-                        output = CheckDestination(packet.IP, packet.Destination, out server);
-                        if (server == null)
-                        {
-                            Log.Write(LogType.Error, output);
-                            return;
-                        }
-                        server.Stream.BeginWrite(packet.Data, 0, packet.Data.Length, null, null);
-                        Log.Write(LogType.TransmissionOut, $"Packet sent to Server on connection type {server.Type.ToString()}: {packet.ToString()}");
-                        break;
-                    case AssetType.NONE:
-                        Log.Write(LogType.Error, $"The destination type parameter was incorrect for packet: {packet.ToString()}");
-                        break;
-                }
+                //switch (packet.DestinationType)
+                //{
+                //    case AssetType.CLIENT:
+                //        Client client = null;
+                //        output = CheckDestination(packet.Index, out client);
+                //        if (client == null)
+                //        {
+                //            Log.Write(LogType.Error, output);
+                //            return;
+                //        }
+                //        client.Stream.BeginWrite(packet.Data, 0, packet.Data.Length, null, null);
+                //        Log.Write(LogType.TransmissionOut, $"Packet sent to Client on Index {client.Index.ToString()}: {packet.ToString()}");
+                //        break;
+                //    case AssetType.SERVER:
+                //        Server server = null;
+                //        output = CheckDestination(packet.IP, packet.Destination, out server);
+                //        if (server == null)
+                //        {
+                //            Log.Write(LogType.Error, output);
+                //            return;
+                //        }
+                //        server.Stream.BeginWrite(packet.Data, 0, packet.Data.Length, null, null);
+                //        Log.Write(LogType.TransmissionOut, $"Packet sent to Server on connection type {server.Type.ToString()}: {packet.ToString()}");
+                //        break;
+                //    case AssetType.NONE:
+                //        Log.Write(LogType.Error, $"The destination type parameter was incorrect for packet: {packet.ToString()}");
+                //        break;
+                //}
             }
             catch (Exception ex)
             {
@@ -54,7 +55,7 @@ namespace Core
         /// <param name="Destination"></param>
         /// <param name="PacketNumber"></param>
         /// <param name="buffer"></param>
-        public static void BuildBasePacket(AssetType DestinationType, Server Destination, int PacketNumber, ref ByteBuffer.ByteBuffer buffer)
+        public new static void BuildBasePacket(AssetType DestinationType, Server Destination, int PacketNumber, ref ByteBuffer.ByteBuffer buffer)
         {
             buffer.WriteInteger((int)DestinationType);
             if (Destination.Authenticated)
@@ -75,48 +76,49 @@ namespace Core
         /// <param name="Destination">The Client that will be receiving the packet.</param>
         /// <param name="packetNumber">The number, to be translated into execution via enum.</param>
         /// <param name="buffer">The buffer being used to write to.</param>
-        public static void BuildBasePacket(Client Destination, int packetNumber, ref ByteBuffer.ByteBuffer buffer)
-        {
-            buffer.WriteInteger((int)AssetType.CLIENT);
-            buffer.WriteInteger(packetNumber);
-        }
+        //public static void BuildBasePacket(Client Destination, int packetNumber, ref ByteBuffer.ByteBuffer buffer)
+        //{
+        // Source
+        // Destination
+        //    buffer.WriteInteger(packetNumber);
+        //}
 
-        private static string CheckDestination(int Index, out Client client)
-        {
-            if (Index > Constants.MaxConnections || Index < 0)
-            {
-                client = null;
-                return $"The Index {Index.ToString()} was less than 0 or greater than {Constants.MaxConnections.ToString()}.";
-            }
-            Client c = null;
-            lock (Network.Instance.Clients)
-            {
-                if (Network.Instance.Clients[Index] == null)
-                {
-                    client = null;
-                    return $"The Client object at Index {Index.ToString()} was null.";
-                }
+        //private static string CheckDestination(int Index, out Client client)
+        //{
+        //    if (Index > Constants.MaxConnections || Index < 0)
+        //    {
+        //        client = null;
+        //        return $"The Index {Index.ToString()} was less than 0 or greater than {Constants.MaxConnections.ToString()}.";
+        //    }
+        //    Client c = null;
+        //    lock (NetworkBase.Instance.Clients)
+        //    {
+        //        if (NetworkBase.Instance.Clients[Index] == null)
+        //        {
+        //            client = null;
+        //            return $"The Client object at Index {Index.ToString()} was null.";
+        //        }
 
-                c = Network.Instance.Clients[Index];
-            }
-            if (!c.Connected)
-            {
-                client = null;
-                return $"The Client object at Index {Index.ToString()} was not connected.";
-            }
-            else if (c.Stream == null)
-            {
-                client = null;
-                return $"The Clients Network Stream on Index {Index.ToString()} was null.";
-            }
-            else if (!c.Stream.CanWrite)
-            {
-                client = null;
-                return $"The Clients Network Stream on Index {Index.ToString()} is not able to write to the Network Stream.";
-            }
-                client = c;
-                return "";
-        }
+        //        c = NetworkBase.Instance.Clients[Index];
+        //    }
+        //    if (!c.Connected)
+        //    {
+        //        client = null;
+        //        return $"The Client object at Index {Index.ToString()} was not connected.";
+        //    }
+        //    else if (c.Stream == null)
+        //    {
+        //        client = null;
+        //        return $"The Clients Network Stream on Index {Index.ToString()} was null.";
+        //    }
+        //    else if (!c.Stream.CanWrite)
+        //    {
+        //        client = null;
+        //        return $"The Clients Network Stream on Index {Index.ToString()} is not able to write to the Network Stream.";
+        //    }
+        //        client = c;
+        //        return "";
+        //}
         private static string CheckDestination(string IP, ConnectionType connectionType, out Server server, int Index = -1)
         {
             if (!Enum.IsDefined(typeof(ConnectionType), connectionType))
@@ -198,7 +200,7 @@ namespace Core
         {
             List<object> Contents = new List<object>();
             ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
-            BuildBasePacket(Source, Index, -1, ref buffer);
+            //BuildBasePacket(Source, Index, -1, ref buffer);
             buffer.WriteString(AuthenticationCode);
             Server server = null;
             string output = CheckDestination(Destination.IP, Destination.Type, out server, Destination.Index);
@@ -219,8 +221,8 @@ namespace Core
                 List<object> Contents = new List<object>();
                 ByteBuffer.ByteBuffer buffer = new ByteBuffer.ByteBuffer(Contents);
                 buffer.WriteString(log);
-                Packet packet = new Packet((int)ToolProcessPacketNumbers.SendLogs, ToolProcessPacketNumbers.SendLogs.ToString(), Destination.IP, -1, Destination.Type, Source, buffer.ToArray());
-                Send(packet);
+                //Packet packet = new Packet((int)ToolProcessPacketNumbers.SendLogs, ToolProcessPacketNumbers.SendLogs.ToString(), Destination.IP, -1, Destination.Type, Source, buffer.ToArray());
+                //Send(packet);
             }
         }
     }

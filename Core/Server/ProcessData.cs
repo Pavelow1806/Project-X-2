@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,15 +11,7 @@ namespace Core
 {
     public static class ProcessData
     {
-        public static ServerPacket Process(Server Source, int DestinationIndex, byte[] data)
-        {
-
-        }
-        public static ClientPacket Process(Client Source, byte[] data)
-        {
-            ClientPacket packet;
-        }
-        public static Packet Process(Connection connection, int index, byte[] data)
+        public static Packet Process(Connection connection, byte[] data)
         {
             try
             {
@@ -36,15 +29,16 @@ namespace Core
                             data = data,
                             packetNumber = buffer.ReadInteger(),
                             packetName = "Undefined"
-                        });
+                        }, connection.Index);
+                    return cp;
                 }
 
-                int ServerIndex = buffer.ReadInteger();
-                int PacketNumber = buffer.ReadInteger();
+                //int ServerIndex = buffer.ReadInteger();
+                //int PacketNumber = buffer.ReadInteger();
 
-                Packet packet = new Packet(PacketNumber, "", connection.IP, (Source == ConnectionType.CLIENT ? index : ServerIndex), connection.Type, Source, Contents, data);
+                //Packet packet = new Packet(PacketNumber, "", connection.IP, connection.Index, connection.Type, Source, Contents, data);
 
-                return packet;
+                return null;
             }
             catch (Exception ex)
             {

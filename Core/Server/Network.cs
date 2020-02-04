@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public class Network
+    public class Network : NetworkBase
     {
         public static Network Instance { get; private set; }
         private static void AssignInstance(Network network) { Instance = network; }
@@ -23,8 +24,6 @@ namespace Core
         public Dictionary<ConnectionType, Server> Servers = new Dictionary<ConnectionType, Server>();
         #endregion
 
-        public readonly AssetType MyAssetType = AssetType.NONE;
-        public readonly ConnectionType MyConnectionType = ConnectionType.UNKNOWN;
         private int? ClientPort
         {
             get
@@ -90,20 +89,11 @@ namespace Core
         public EventHandler<PacketEventArgs> OnPacketReceived;
         #endregion
 
-        public Network(ConnectionType type, string ServerClusterIP = Constants.ClusterLocalIP) 
+        public Network(AssetType type, string ServerClusterIP = Constants.ClusterLocalIP) :
+            base(type)
         {
             AssignInstance(this);
             ClusterIP = ServerClusterIP;
-            MyConnectionType = type;
-            if (type != ConnectionType.CLIENT && type != ConnectionType.TOOL)
-                MyAssetType = AssetType.SERVER;
-            else if (type != ConnectionType.UNKNOWN)
-                if (type == ConnectionType.CLIENT)
-                    MyAssetType = AssetType.CLIENT;
-                else
-                    MyAssetType = AssetType.TOOL;
-            else
-                MyAssetType = AssetType.NONE;
 
             int Port;
 
@@ -147,6 +137,7 @@ namespace Core
                 }
                 if (ServerListener != null)
                 {
+                    ServerListener.OnConnect += Server_OnConnect;
                     ServerListener.StartAccept();
                     Log.Write(LogType.Connection, "Server Listener started");
                 }
@@ -160,6 +151,7 @@ namespace Core
                 if (ClientListener != null)
                 {
                     ClientListener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
+                    ClientListener.OnConnect += Client_OnConnect;
                     ClientListener.StartAccept();
                     Log.Write(LogType.Connection, "Client Listener started");
                 }
@@ -170,77 +162,119 @@ namespace Core
                 return false;
             }
             Log.Write(LogType.Information, "Server started");
-            return Running = true;
+            return (Running = true);
+        }
+        private void Server_OnConnect(object sender, ListenerCallbackEventArgs e)
+        {
+            Server server = new Server(ConnectionType.UNKNOWN, -1);
+
+            try
+            {
+                server.IP = e.NewConnection.Client.RemoteEndPoint.ToString();
+
+                lock (ServerQueue)
+                {
+                    if (ServerQueue.Any(x => x.IP == server.IP))
+                    {
+                        Log.Write(LogType.Error, "A server with an identical IP address and port has connected, disconnecting");
+                        server.Close();
+                        return;
+                    }
+                }
+
+                server.Connected = true;
+                server.Socket = e.NewConnection;
+                server.Username = "System";
+                server.SessionID = "System";
+
+                ServerQueue.Add(server);
+
+                Log.Write(LogType.Connection, $"Server connected with IP {server.IP} and was added to the Server Queue, waiting for handshake..");
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
+
+            server.Start();
+        }
+        private void Client_OnConnect(object sender, ListenerCallbackEventArgs e)
+        {
+            try
+            {
+                bool SocketFree = false;
+                for (int i = 0; i < Constants.MaxConnections; i++)
+                {
+                    if (Clients[i].Available)
+                    {
+                        SocketFree = true;
+                        Connection client = Clients[i];
+                        client.Connected = true;
+                        client.Socket = e.NewConnection;
+                        client.IP = e.NewConnection.Client.RemoteEndPoint.ToString();
+                        client.Start();
+                        Log.Write(LogType.Connection, $"Client connected with IP {client.IP} on Index {client.Index}");
+                        break;
+                    }
+                }
+                if (!SocketFree)
+                {
+                    Log.Write(LogType.Warning, $"Connection from IP {e.NewConnection.Client.RemoteEndPoint.ToString()} failed due to no server sockets being available, consider raising the current maximum of {Constants.MaxConnections.ToString()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
 
         /// <summary>
         /// Attempt to connect to the other servers in the cluster
         /// </summary>
-        public List<ConnectionType> Connect()
+        public override List<ConnectionType> Connect()
         {
             List<ConnectionType> result = new List<ConnectionType>();
-            if (MyAssetType == AssetType.NONE)
+            // If this is a server, connect to the other servers in the cluster
+            switch (MyConnectionType)
             {
-                Log.Write(LogType.Error, $"The asset type I have is {MyAssetType.ToString()}, which is invalid");
+                case ConnectionType.UNKNOWN:
+                    Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
+                    break;
+                case ConnectionType.CLIENT:
+                    Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
+                    break;
+                case ConnectionType.GAMESERVER:
+                    ConnectToServer(ConnectionType.LOGINSERVER);
+                    result.Add(ConnectionType.LOGINSERVER);
+                    ConnectToServer(ConnectionType.SYNCSERVER);
+                    result.Add(ConnectionType.SYNCSERVER);
+                    ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                    result.Add(ConnectionType.TOOL);
+                    break;
+                case ConnectionType.LOGINSERVER:
+                    ConnectToServer(ConnectionType.GAMESERVER);
+                    result.Add(ConnectionType.GAMESERVER);
+                    ConnectToServer(ConnectionType.SYNCSERVER);
+                    result.Add(ConnectionType.SYNCSERVER);
+                    ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                    result.Add(ConnectionType.TOOL);
+                    break;
+                case ConnectionType.SYNCSERVER:
+                    ConnectToServer(ConnectionType.LOGINSERVER);
+                    result.Add(ConnectionType.LOGINSERVER);
+                    ConnectToServer(ConnectionType.GAMESERVER);
+                    result.Add(ConnectionType.GAMESERVER);
+                    ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
+                    result.Add(ConnectionType.TOOL);
+                    break;
+                default:
+                    Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
+                    break;
             }
-            if (MyAssetType == AssetType.TOOL)
-            {
-                ConnectToServer(ConnectionType.LOGINSERVER);
-                result.Add(ConnectionType.LOGINSERVER);
-                ConnectToServer(ConnectionType.GAMESERVER);
-                result.Add(ConnectionType.GAMESERVER);
-                ConnectToServer(ConnectionType.SYNCSERVER);
-                result.Add(ConnectionType.SYNCSERVER);
-            }
-            else if (MyAssetType == AssetType.CLIENT)
-            {
-                ConnectToServer(ConnectionType.LOGINSERVER);
-                result.Add(ConnectionType.LOGINSERVER);
-            }
-            else
-            {
-                // If this is a server, connect to the other servers in the cluster
-                switch (MyConnectionType)
-                {
-                    case ConnectionType.UNKNOWN:
-                        Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
-                        break;
-                    case ConnectionType.CLIENT:
-                        Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
-                        break;
-                    case ConnectionType.GAMESERVER:
-                        ConnectToServer(ConnectionType.LOGINSERVER);
-                        result.Add(ConnectionType.LOGINSERVER);
-                        ConnectToServer(ConnectionType.SYNCSERVER);
-                        result.Add(ConnectionType.SYNCSERVER);
-                        ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
-                        result.Add(ConnectionType.TOOL);
-                        break;
-                    case ConnectionType.LOGINSERVER:
-                        ConnectToServer(ConnectionType.GAMESERVER);
-                        result.Add(ConnectionType.GAMESERVER);
-                        ConnectToServer(ConnectionType.SYNCSERVER);
-                        result.Add(ConnectionType.SYNCSERVER);
-                        ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
-                        result.Add(ConnectionType.TOOL);
-                        break;
-                    case ConnectionType.SYNCSERVER:
-                        ConnectToServer(ConnectionType.LOGINSERVER);
-                        result.Add(ConnectionType.LOGINSERVER);
-                        ConnectToServer(ConnectionType.GAMESERVER);
-                        result.Add(ConnectionType.GAMESERVER);
-                        ConnectToServer(ConnectionType.TOOL, Constants.MaxToolConnectAttempts);
-                        result.Add(ConnectionType.TOOL);
-                        break;
-                    default:
-                        Log.Write(LogType.Error, "The connection type of this application is not setup correctly");
-                        break;
-                }
-            }
-            return (result.Count == 0 ? null : result);
+            return result;
         }
 
-        private void ConnectToServer(ConnectionType Destination, int MaxConnectionAttempts = -1)
+        protected override void ConnectToServer(ConnectionType Destination, int MaxConnectionAttempts = -1)
         {
             int Port;
             if (!ServerAuthenticated(Destination))
@@ -279,7 +313,7 @@ namespace Core
         /// </summary>
         /// <param name="Destination">The destination connection type.</param>
         /// <returns>The Port you need to use to connect to the destination listener (Can be null).</returns>
-        private int? GetDestinationPort(ConnectionType Destination)
+        protected override int? GetDestinationPort(ConnectionType Destination)
         {
             switch (Destination)
             {
@@ -345,12 +379,19 @@ namespace Core
         {
             if (server == null) return;
             server.OnAuthenticate += Authentication_AuthenticatedEvent;
-            server.OnClose += Server_OnClose;
-            server.OnPacketReceived += PacketReceived;
+            server.OnClose += Connection_OnClose;
+            server.OnDataReceived += DataReceived;
         }
-        private void PacketReceived(object sender, PacketEventArgs e)
+        private void DataReceived(object sender, NewDataEventArgs e)
         {
-            OnPacketReceived(sender, e);
+            try
+            {
+                OnPacketReceived(sender, new PacketEventArgs(ProcessData.Process((Connection)sender, e.Data), (Connection)sender));
+            }
+            catch (Exception ex)
+            {
+                Log.Write(ex);
+            }
         }
         private void Authentication_AuthenticatedEvent(object sender, ServerConnectionEventArgs e)
         {
@@ -364,7 +405,7 @@ namespace Core
             Log.Write(LogType.Information, $"{e.Type.ToString()} successfully authenticated");
             OnServerAuthenticated(this, e);
         }
-        private void Server_OnClose(object sender, ServerConnectionEventArgs e)
+        private void Connection_OnClose(object sender, ConnectionEventArgs e)
         {
             try
             {
@@ -380,7 +421,7 @@ namespace Core
                 }
                 lock (ServerQueue)
                 {
-                    if (ServerQueue.Contains(e.Server))
+                    if (ServerQueue.Contains((server)e.Connection))
                     {
                         e.Server = null;
                         ServerQueue.Remove(e.Server);

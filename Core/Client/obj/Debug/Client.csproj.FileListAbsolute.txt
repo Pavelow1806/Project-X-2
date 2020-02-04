@@ -1,0 +1,10 @@
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\obj\Debug\Client.csprojAssemblyReference.cache
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\bin\Debug\Client.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\bin\Debug\Client.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\bin\Debug\ByteBuffer.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\bin\Debug\Core.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\bin\Debug\ByteBuffer.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\bin\Debug\Core.pdb
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\obj\Debug\Client.csproj.CopyComplete
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\obj\Debug\Client.dll
+C:\Users\james\Documents\GitHub\Project-X-2\Core\Client\obj\Debug\Client.pdb

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    class Constants
+    public class Constants
     {
         #region Log
         public const string DefaultLogFolderName = "Logs";

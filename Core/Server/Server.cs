@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,6 @@ namespace Core
     {
         private System.Timers.Timer AuthenticateTimer;
         public event EventHandler<ServerConnectionEventArgs> OnAuthenticate;
-        public event EventHandler<ServerConnectionEventArgs> OnClose;
         private bool AuthenticationSuccessful = false;
         private bool RepeatConnections = false;
         private int MaxConnectionAttempts = -1;
@@ -199,7 +199,7 @@ namespace Core
                         ConnectedTime = DateTime.Now;
                         Log.Write(LogType.Connection, Type, "Connection to server successful! Handshaking..");
                         Connected = true;
-                        SendData.Authenticate(Network.Instance.MyConnectionType, Index, this, Network.Instance.AuthenticationCode);
+                        //SendData.Authenticate(Network.Instance.MyConnectionType, Index, this, Network.Instance.AuthenticationCode);
                     }
                 }
             }
