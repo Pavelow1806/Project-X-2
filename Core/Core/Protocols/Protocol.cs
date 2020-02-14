@@ -24,7 +24,7 @@ namespace Core.Protocols
                 return (isDirty || Definitions.Any(x => x.IsDirty));
             }
         }
-        
+        //lol
         public Protocol(ConnectionType destination, ProtocolDirection direction, string name)
         {
             Destination = destination;

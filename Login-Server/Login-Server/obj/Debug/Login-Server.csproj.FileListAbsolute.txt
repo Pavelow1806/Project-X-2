@@ -11,3 +11,14 @@ C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\ByteBuffer.dll
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\ByteBuffer.pdb
 C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csprojAssemblyReference.cache
+H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe.config
+H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe
+H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.pdb
+H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\ByteBuffer.dll
+H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Core.dll
+H:\Repos\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csprojAssemblyReference.cache
+H:\Repos\Project-X-2\Login-Server\Login-Server\obj\Debug\Login_Server.ProjectInstaller.resources
+H:\Repos\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csproj.GenerateResource.cache
+H:\Repos\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.csproj.CopyComplete
+H:\Repos\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.exe
+H:\Repos\Project-X-2\Login-Server\Login-Server\obj\Debug\Login-Server.pdb
