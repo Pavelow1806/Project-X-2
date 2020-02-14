@@ -104,3 +104,16 @@ Affected parameters are:
    logtoconsole = 
    logfile = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.InstallLog
    assemblypath = C:\Users\james\Documents\GitHub\Project-X-2\Login-Server\Login-Server\bin\Debug\login-server.exe
+Installing assembly 'H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.InstallLog
+   assemblypath = H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe
+Installing service Project-X-2 Login Server...
+Service Project-X-2 Login Server has been successfully installed.
+Creating EventLog source Project-X-2 Login Server in log Application...
+Committing assembly 'H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.InstallLog
+   assemblypath = H:\Repos\Project-X-2\Login-Server\Login-Server\bin\Debug\Login-Server.exe
