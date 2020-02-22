@@ -278,3 +278,4 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+/Client/Test Environment/Assets/Scripts/TestScript.cs
