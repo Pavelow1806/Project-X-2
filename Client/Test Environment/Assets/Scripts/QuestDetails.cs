@@ -25,6 +25,9 @@ public class QuestDetails : MonoBehaviour
     // Dictionary of reward item Id and quantity
     private RewardList m_rewards;
 
+    // Title of quest
+    private string m_questTitle = "";
+
     //-----------------------------------------------
     // Public Methods
     //-----------------------------------------------
@@ -54,11 +57,17 @@ public class QuestDetails : MonoBehaviour
 
     public void PopulateQuest()
     {
-
+        m_questTitle = "Become a murderer!";
+        m_questDescription = "Kill 6 things.";
     }
 
     public string GetQuestDescription()
     {
         return m_questDescription;
+    }
+
+    public string GetQuestTitle()
+    {
+        return m_questTitle;
     }
 }
